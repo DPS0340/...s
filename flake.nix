@@ -24,6 +24,18 @@
           config.allowUnfree = true; 
         };
         
+        commonPkgs = with pkgs; [
+          nerd-fonts.symbols-only
+          nerd-fonts.fira-code
+          starship
+          bat
+          git
+          curl
+          asciinema
+          emacs
+          xorg.xeyes
+        ];
+        
         commonShellHooks = import ./lib/common-shell-hook.nix { inherit pkgs system; };
         
         # Default environment definition
