@@ -13,7 +13,7 @@ let
   # 아직 이맥스를 안쓰고, windows support는 기다려야됨
   commonPkgs = with pkgs; [
     # oh-my-zsh
-    # emacs
+    emacs
   ] ++ (if stdenv.isWindows then [ chocolatey ] else []);
   
   # Binary settings (if needed)
