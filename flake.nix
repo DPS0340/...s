@@ -17,6 +17,7 @@
           inherit system overlays; 
           config.allowUnfree = true; 
         };
+        
         commonPkgs = with pkgs; [
           nerd-fonts.symbols-only
           nerd-fonts.fira-code
@@ -25,6 +26,8 @@
           git
           curl
           asciinema
+          emacs
+          xorg.xeyes
         ];
         
         # lib = import (self + "/lib") {inherit pkgs; };
