@@ -29,20 +29,11 @@
           emacs
           xorg.xeyes
         ];
-        
-        # lib = import (self + "/lib") {inherit pkgs; };
-        
-        # Call generating
-        # commonShellHooks = pkgs.callPackage ./lib/common-shell-hook.nix { inherit pkgs; };
-        commonShellHooks = ''
-          eval "$(starship init bash)"
-          alias l="ls -lah"
-          alias cat="bat"
-        '';
-         
+        commonShellHooks = import ./lib/common-shell-hook.nix { inherit pkgs; };
+
+        # Not yet: https://github.com/NixOS/nix/pull/8901 
         # ++ (if stdenv.isWindows then [ chocolatey ] else []);
-        # commonHooks = import "./lib/common-shell-hook.nix";
-        # Not yet: https://github.com/NixOS/nix/pull/8901
+        
         # CLI 바이너리 처리
         # myCliBinary = import ./cli-derivation.nix { inherit pkgs system; };
         # hasBinary = myCliBinary ? package && myCliBinary.package != null;
@@ -64,7 +55,8 @@
             lldb
           ] ++ commonPkgs;
           
-          shellHook = commonShellHooks+''
+          shellHook = ''
+            ${commonShellHooks}
             # Log level
             declare -x name="rust"
             export RUST_BACKTRACE=1
