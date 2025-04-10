@@ -25,6 +25,10 @@
         };
         
         commonPkgs = with pkgs; [
+          nerd-fonts.fira-code
+          starship
+        ];
+        defaultPkgs = with pkgs; [
           nerd-fonts.symbols-only
           nerd-fonts.fira-code
           starship
@@ -37,6 +41,7 @@
           uv
         ];
         commonShellHooks = import ./lib/common-shell-hook.nix { inherit pkgs; };
+        
 
         # Not yet: https://github.com/NixOS/nix/pull/8901 
         # ++ (if stdenv.isWindows then [ chocolatey ] else []);
@@ -47,9 +52,7 @@
         # cliBinary = if hasBinary then [ myCliBinary.package ] else [];
         
         # Rust dev latest
-        rustLatest = pkgs.mkShell {
-          name = "rust";
-          buildInputs = with pkgs; [
+        rustPkgs = with pkgs; [
             (rust-bin.stable.latest.default.override {
               extensions = [ "rust-src" "rust-analyzer" "clippy" "rustfmt" ];
             })
@@ -60,10 +63,8 @@
             cargo-watch
             cargo-expand
             lldb
-          ] ++ commonPkgs;
-          
-          shellHook = ''
-            ${commonShellHooks}
+          ]++ commonPkgs;
+        rustShellHook = commonShellHooks + ''
             # Log level
             declare -x name="rust"
             export RUST_BACKTRACE=1
@@ -77,26 +78,32 @@
             alias cb='cargo build'
             alias ct='cargo test'
             alias cr='cargo run'
+            
+            rustc --version
           '';
-        } ;
-        
+        rustShell = pkgs.mkShell {
+          name = "rust";
+          buildInputs = rustPkgs;
+          shellHook = rustShellHook;
+        };
+        rustBuildEnv = pkgs.buildEnv {
+          name = "rust";
+          paths = rustPkgs;
+        };
         # Rust 1.70.0
-        rust_1_70_0 = pkgs.mkShell {
-          name = "rust-1.70.0";
-          buildInputs = with pkgs; [
-            (rust-bin.stable."1.70.0".default.override {
-              extensions = [ "rust-src" "rust-analyzer" "clippy" "rustfmt" ];
-            })
-            pkg-config
-            openssl.dev
-            libiconv
-            cargo-edit
-            cargo-watch
-            cargo-expand
-            lldb
-          ] ++ commonPkgs;
-          
-          shellHook = commonShellHooks + ''
+        rust170Pkgs = with pkgs; [
+          (rust-bin.stable."1.70.0".default.override {
+            extensions = [ "rust-src" "rust-analyzer" "clippy" "rustfmt" ];
+          })
+          pkg-config
+          openssl.dev
+          libiconv
+          cargo-edit
+          cargo-watch
+          cargo-expand
+          lldb
+        ]++ commonPkgs;
+        rust170ShellHook = commonShellHooks + ''
             # Rust 로그
             export RUST_BACKTRACE=1
             export RUST_LOG=debug
@@ -113,61 +120,68 @@
             # Version
             rustc --version
           '';
+        
+        rust170 = pkgs.mkShell {
+          name = "rust-1.70.0";
+          buildInputs = rust170Pkgs;
+          shellHook = rust170ShellHook;
         };
         
         # Go Dev
-        goLatest = pkgs.mkShell {
-          name = "go";
-          buildInputs = with pkgs; [
-            go
-            gopls
-            gotools
-            go-outline
-            gopkgs
-            godef
-            golint
-          ] ++ commonPkgs;
-        
-          shellHook = commonShellHooks + ''
-            # Go 환경 설정
-            export GOPATH="$HOME/go"
-            export PATH="$GOPATH/bin:$PATH"
-            mkdir -p $GOPATH
+        goPkgs = with pkgs; [
+          go
+          gopls
+          gotools
+          go-outline
+          gopkgs
+          godef
+          golint
+        ]++ commonPkgs; 
+        goShellHook = ''
+          # Go 환경 설정
+          export GOPATH="$HOME/go"
+          export PATH="$GOPATH/bin:$PATH"
+          mkdir -p $GOPATH
 
-            # Version
-            go version
-          '';
+          # Version
+          go version
+        ''+ commonShellHooks;
+        goShell = pkgs.mkShell {
+          name = "go";
+          buildInputs = goPkgs;
+          shellHook = goShellHook;
+        };
+        goBuildEnv = pkgs.buildEnv {
+          name = "go";
+          paths = goPkgs;
         };
         
         # Python Dev
-        pyLatest = pkgs.mkShell {
-	  name = "py";
-          buildInputs = with pkgs; [
-            uv
-          ] ++ commonPkgs;
-          
-          shellHook = commonShellHooks+ ''
-            # Version
-            uv version
-          '';
+        pyPkgs = with pkgs; [
+          uv
+        ] ++ commonPkgs;
+        pyShellHook =  ''
+          # Version
+          uv version
+        '' + commonShellHooks;
+        pyShell = pkgs.mkShell {
+          name = "py";
+          buildInputs = pyPkgs;
+          shellHook = pyShellHook;
+        };
+        pyBuildEnv = pkgs.buildEnv {
+            name = "py";
+            paths = pyPkgs;
         };
 
         # Default, 
-        devShell = pkgs.mkShell {
-          name = "dev";
-          buildInputs = 
-            rustLatest.buildInputs ++ 
-            goLatest.buildInputs;
-          
-          shellHook = commonShellHooks+ ''
-            echo "Develop in cycle"
-            ${rustLatest.shellHook}
-            ${goLatest.shellHook}
-          '';
+        devBuildEnv = pkgs.buildEnv {
+            name = "dev";
+            paths = defaultPkgs ++ pyPkgs ++ rustPkgs ++ goPkgs;
         };
       
-      in with pkgs; {
-        # homeConfigurations."1eedaegon-${system}" = home-manager.lib.homeManagerConfiguration {
+      in {
+        # homeConfigurations."1eedaegon-${system}" =   home-manager.lib.homeManagerConfiguration {
         #     modules = [
         #       {
         #         home.username = "1eedaegon";
@@ -177,13 +191,24 @@
         #       }
         #     ];
         #   };
+        # packages = {
+        #   dev = mkShell {
+        #     # name = "dev";
+        #     buildInputs = commonPkgs ++ py.buildInputs;
+        #     shellHook = ''''+commonShellHooks + rustShellHook + goShellHook + pyShellHook;
+        #   };
+        #   inherit py rust rust170 go;
+        # };
+        # devShells = {
+        #   inherit pyShell;
+        # };
+        # TODO: Make generate func for buildEnv, mkShell using pkgs and shellHook
         packages = {
-          default = devShell;
-          dev = devShell;
-          rust = rustLatest;
-          rust170 = rust_1_70_0;
-          go = goLatest;
-          py = pyLatest;
+          default = devBuildEnv;
+          dev = devBuildEnv;
+          py = pyBuildEnv;
+          go = goBuildEnv;
+          rust = rustBuildEnv;
         };
       }
     );
