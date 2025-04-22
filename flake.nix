@@ -4,6 +4,8 @@
   
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nix-darwin.url = "github:nix-darwin/nix-darwin/master";
+    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     flake-utils.url = "github:numtide/flake-utils";
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
@@ -223,17 +225,30 @@
       in {
         packages = mergeOutputsBy "packages";
         devShells = mergeOutputsBy "devShells";
+        home-manager = {
+            useUserPackages = true;
+            useGlobalPkgs = true;
+        };
         legacyPackages = {
             # See https://www.chrisportela.com/posts/home-manager-flake/
-            homeConfigurations = {
-                "dev" = home-manager.lib.homeManagerConfiguration {
-                    inherit pkgs;
-                    
-                    modules = [ ./lib/home.nix ];
-                };
-            };
+            homeConfigurations = builtins.listToAttrs (
+                builtins.map (username: {
+                    name = username;
+                    value = home-manager.lib.homeManagerConfiguration {
+                        inherit pkgs;
+
+                        extraSpecialArgs = {
+                            userConfig = {
+                                inherit system;
+                                inherit username;
+                            };
+                        };
+                        
+                        modules = [ ./lib/home.nix ];
+                    };
+                }) [ "1eedaegon" "dps0340" ]
+            );
         };
-        
       }
     );
 }
