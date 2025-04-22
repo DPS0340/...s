@@ -38,6 +38,24 @@ User globally
 
 `❯ nix profile install github:1eedaegon/...s`
 
+## Manage home-manager profile
+
+### Install
+
+It's able to add other user on [./flake.nix]!
+
+Change to your architecture from below command example.
+
+`❯ nix profile install github:1eedaegon/...s.#legacyPackages.aarch64-darwin.homeConfigurations."1eedaegon".activationPackage`
+
+### Upgrade
+
+`❯ nix profile upgrade activationPackage`
+
+### Remove
+
+`❯ nix profile remove activationPackage`
+
 ## Uninstall
 
 1. Clean devshells
