@@ -58,7 +58,7 @@
             # macOS-only packages
             coreutils
             # (import ./lib/iterm2-settings.nix { inherit pkgs system; })
-          ] else if system == "x86_64-linux" then [
+          ] else if system == "x86_64-linux" || system == "aarch64-linux" then [
             # Linux-only packages
             systemd
           ] else []);
