@@ -64,7 +64,7 @@
           ] else []);
           shell = commonShellHooks;
         };
-        
+
         mkEnv = 
           { name, pkgList ? [], shell ? "", combine ? [] }: 
           let 
@@ -223,6 +223,17 @@
       in {
         packages = mergeOutputsBy "packages";
         devShells = mergeOutputsBy "devShells";
+        legacyPackages = {
+            # See https://www.chrisportela.com/posts/home-manager-flake/
+            homeConfigurations = {
+                "dev" = home-manager.lib.homeManagerConfiguration {
+                    inherit pkgs;
+                    
+                    modules = [ ./lib/home.nix ];
+                };
+            };
+        };
+        
       }
     );
 }
