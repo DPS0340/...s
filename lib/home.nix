@@ -41,7 +41,6 @@
 	kubectx
 	rustc
 	vscode
-	nerdfonts
 	jetbrains-mono
 	wezterm
 	lazygit
