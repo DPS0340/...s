@@ -257,7 +257,6 @@
                 ./lib/darwin-settings.nix
                 home-manager.darwinModules.home-manager
                 {
-                  inherit pkgs;
                   home-manager.useGlobalPkgs = true;
                   home-manager.useUserPackages = true;
                   home-manager.users.${username} = ./lib/home.nix;
