@@ -270,7 +270,7 @@
 
                   # Optionally, use home-manager.extraSpecialArgs to pass
                   # arguments to home.nix
-                  extraSpecialArgs.extraSpecialArgs = {
+                  home-manager.extraSpecialArgs = {
                     userConfig = {
                       inherit system;
                       inherit username;
