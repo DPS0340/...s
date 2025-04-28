@@ -228,10 +228,6 @@
       in {
         packages = mergeOutputsBy "packages";
         devShells = mergeOutputsBy "devShells";
-        home-manager = {
-          useUserPackages = true;
-          useGlobalPkgs = true;
-        };
         legacyPackages = {
           # See https://www.chrisportela.com/posts/home-manager-flake/
           homeConfigurations = builtins.listToAttrs (builtins.map (username: {
@@ -239,6 +235,8 @@
             value = home-manager.lib.homeManagerConfiguration {
               inherit pkgs;
 
+              useUserPackages = true;
+              useGlobalPkgs = true;
               extraSpecialArgs = {
                 userConfig = {
                   inherit system;
@@ -253,21 +251,35 @@
             name = username;
             value = nix-darwin.lib.darwinSystem {
               system = "aarch64-darwin";
+              # See https://github.com/nix-darwin/nix-darwin/issues/1045
+              pkgs = import nixpkgs {
+                  inherit system overlays;
+                  config.allowUnfree = true;
+              };
               modules = [
                 ./lib/darwin-settings.nix
                 home-manager.darwinModules.home-manager
                 {
-                  home-manager.useGlobalPkgs = true;
-                  home-manager.useUserPackages = true;
+                  # See https://github.com/nix-community/home-manager/issues/6036#issuecomment-2466986456
+                  users = {
+                      users.${username} = {
+                        name = username;
+                        home = "/Users/${username}";
+                      };
+                  };
+                  home-manager = {
+                    useGlobalPkgs = true;
+                    useUserPackages = true;
 
-                  home-manager.users.${username} = import ./lib/home.nix;
+                    users.${username} = ./lib/home.nix;
 
-                  # Optionally, use home-manager.extraSpecialArgs to pass
-                  # arguments to home.nix
-                  home-manager.extraSpecialArgs = {
-                    userConfig = {
-                      inherit system;
-                      inherit username;
+                    # Optionally, use home-manager.extraSpecialArgs to pass
+                    # arguments to home.nix
+                    extraSpecialArgs = {
+                      userConfig = {
+                        inherit system;
+                        inherit username;
+                      };
                     };
                   };
                 }
