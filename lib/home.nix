@@ -64,7 +64,7 @@
       unzip
       imgcat
       python3.12
-      python3.12-conda
+      "python3.12-conda"
       nixfmt
       direnv
       opentofu
