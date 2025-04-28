@@ -17,7 +17,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, flake-utils, home-manager, rust-overlay, ... }:
+  outputs = { self, nixpkgs, flake-utils, home-manager, nix-darwin, rust-overlay, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         overlays = [ (import rust-overlay) ];
@@ -249,6 +249,39 @@
                 }) [ "1eedaegon" "dps0340" ]
             );
         };
-      }
+        darwinConfigurations = builtins.listToAttrs (
+                builtins.map (username: {
+                    name = username;
+                    value = nix-darwin.lib.darwinSystem {
+                        system = "x86_64-darwin";
+                        extraSpecialArgs = {
+                            userConfig = {
+                                inherit system;
+                                inherit username;
+                            };
+                        };
+                        modules = [
+                            ./lib/darwin-settings.nix
+                            home-manager.darwinModules.home-manager
+                            {
+                                inherit pkgs;
+                                home-manager.useGlobalPkgs = true;
+                                home-manager.useUserPackages = true;
+                                home-manager.users.${username} = ./lib/home.nix;
+
+                                # Optionally, use home-manager.extraSpecialArgs to pass
+                                # arguments to home.nix
+                                extraSpecialArgs.extraSpecialArgs = {
+                                    userConfig = {
+                                        inherit system;
+                                        inherit username;
+                                    };
+                                };
+                            }
+                        ];
+                    };
+                }) [ "1eedaegon" "dps0340" ]
+            );
+        }
     );
 }
