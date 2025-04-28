@@ -38,7 +38,6 @@
       thefuck
       nodejs
       gcc
-      glibc
       libiconv
       fzf
       gnupg
@@ -64,15 +63,14 @@
       zip
       unzip
       imgcat
-      python3.12
-      "python3.12-conda"
+      python312Full
+      micromamba
       nixfmt
       direnv
       opentofu
       zoxide
       htop
       slack
-      playonlinux
       pure-prompt
       libxcrypt
       brave
@@ -89,6 +87,8 @@
       google-chrome
       firefox
       xclip # Clipboard
+      glibc
+      playonlinux
     ] else
       [ ]);
 }
