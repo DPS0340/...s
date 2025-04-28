@@ -21,7 +21,7 @@
       nerd-fonts.fira-code
       nerd-fonts.jetbrains-mono
       coreutils-full
-      terraform
+      opentofu
       openssh
       ansible
       fira-code
