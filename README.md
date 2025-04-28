@@ -42,7 +42,7 @@ User globally
 
 ### Install
 
-It's able to add other user on [./flake.nix]!
+It's able to add other user on flake.nix!
 
 Change to your architecture from below command example.
 
