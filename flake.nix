@@ -253,7 +253,7 @@
                 builtins.map (username: {
                     name = username;
                     value = nix-darwin.lib.darwinSystem {
-                        system = "x86_64-darwin";
+                        system = "aarch64-darwin";
                         extraSpecialArgs = {
                             userConfig = {
                                 inherit system;
