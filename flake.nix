@@ -1,7 +1,7 @@
 # flake.nix
 {
   description = "...s(3dots) with nix flake";
-  
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nix-darwin.url = "github:nix-darwin/nix-darwin/master";
@@ -17,15 +17,16 @@
     };
   };
 
-  outputs = { self, nixpkgs, flake-utils, home-manager, nix-darwin, rust-overlay, ... }:
+  outputs =
+    { self, nixpkgs, flake-utils, home-manager, nix-darwin, rust-overlay, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         overlays = [ (import rust-overlay) ];
-        pkgs = import nixpkgs { 
-          inherit system overlays; 
-          config.allowUnfree = true; 
+        pkgs = import nixpkgs {
+          inherit system overlays;
+          config.allowUnfree = true;
         };
-        
+
         commonPkgs = with pkgs; [
           nerd-fonts.symbols-only
           nerd-fonts.fira-code
@@ -37,53 +38,63 @@
           emacs
           xorg.xeyes
         ];
-        
-        commonShellHooks = import ./lib/common-shell-hook.nix { inherit pkgs system; };
-        
+
+        commonShellHooks =
+          import ./lib/common-shell-hook.nix { inherit pkgs system; };
+
         # Default environment definition
         defaultEnv = {
           name = "default";
-          pkgList = with pkgs; [
-            nerd-fonts.symbols-only
-            nerd-fonts.fira-code
-            starship
-            bat
-            git
-            htop
-            curl
-            asciinema
-            fontconfig
-            direnv
-            gcc
-            gnumake
-          ] ++ (if system == "x86_64-darwin" || system == "aarch64-darwin" then [
-            # macOS-only packages
-            coreutils
-            # (import ./lib/iterm2-settings.nix { inherit pkgs system; })
-          ] else if system == "x86_64-linux" || system == "aarch64-linux" then [
-            # Linux-only packages
-            systemd
-          ] else []);
+          pkgList = with pkgs;
+            [
+              nerd-fonts.symbols-only
+              nerd-fonts.fira-code
+              starship
+              bat
+              git
+              htop
+              curl
+              asciinema
+              fontconfig
+              direnv
+              gcc
+              gnumake
+            ]
+            ++ (if system == "x86_64-darwin" || system == "aarch64-darwin" then
+              [
+                # macOS-only packages
+                coreutils
+                # (import ./lib/iterm2-settings.nix { inherit pkgs system; })
+              ]
+            else if system == "x86_64-linux" || system == "aarch64-linux" then
+              [
+                # Linux-only packages
+                systemd
+              ]
+            else
+              [ ]);
           shell = commonShellHooks;
         };
 
-        mkEnv = 
-          { name, pkgList ? [], shell ? "", combine ? [] }: 
-          let 
+        mkEnv = { name, pkgList ? [ ], shell ? "", combine ? [ ] }:
+          let
             # Combine Pkgs
-            combinedPkgList = if combine != [] 
-              then pkgList ++ builtins.concatMap (env: env.pkgList) combine
-              else pkgList;
+            combinedPkgList = if combine != [ ] then
+              pkgList ++ builtins.concatMap (env: env.pkgList) combine
+            else
+              pkgList;
 
             # Combine Shell
-            combinedShell = if combine != []
-              then shell + builtins.concatStringsSep "\n" (builtins.map (env: env.shell) combine)
-              else shell;
+            combinedShell = if combine != [ ] then
+              shell + builtins.concatStringsSep "\n"
+              (builtins.map (env: env.shell) combine)
+            else
+              shell;
           in {
             inherit name;
             pkgList = combinedPkgList;
             shell = combinedShell;
-            
+
             # Generate buildEnv and mkShell
             toOutputs = baseEnv: {
               packages = {
@@ -101,7 +112,7 @@
               };
             };
           };
-        
+
         environments = {
           default = defaultEnv // {
             toOutputs = _: {
@@ -120,7 +131,7 @@
               };
             };
           };
-          
+
           # Rust 
           rust = mkEnv {
             name = "rust";
@@ -147,7 +158,7 @@
               alias cr='cargo run'
             '';
           };
-          
+
           # Go 
 
           go = mkEnv {
@@ -174,7 +185,7 @@
               mkdir -p $GOPATH
             '';
           };
-          
+
           # Python 
           # TODO: UV가 대신해줄 수 있을것같다.
           py = mkEnv {
@@ -192,8 +203,7 @@
               export PYTHONPATH="$PWD:$PYTHONPATH"
             '';
           };
-          
-          
+
           dev = mkEnv {
             name = "dev";
             shell = ''
@@ -202,86 +212,74 @@
               echo "###############"
               echo "               "
             '';
-            combine = [
-              environments.py
-              environments.go
-              environments.rust
-            ];
+            combine = [ environments.py environments.go environments.rust ];
           };
         };
-        
+
         # Generate outputs for all environments
-        allOutputs = builtins.mapAttrs 
-          (name: env: env.toOutputs defaultEnv) 
-          environments;
-        
+        allOutputs =
+          builtins.mapAttrs (name: env: env.toOutputs defaultEnv) environments;
+
         # packages and devShells merge
         mergeOutputsBy = attr:
-          builtins.foldl' 
-            (acc: outputs: acc // outputs.${attr}) 
-            {} 
-            (builtins.attrValues allOutputs);
-            
+          builtins.foldl' (acc: outputs: acc // outputs.${attr}) { }
+          (builtins.attrValues allOutputs);
+
       in {
         packages = mergeOutputsBy "packages";
         devShells = mergeOutputsBy "devShells";
         home-manager = {
-            useUserPackages = true;
-            useGlobalPkgs = true;
+          useUserPackages = true;
+          useGlobalPkgs = true;
         };
         legacyPackages = {
-            # See https://www.chrisportela.com/posts/home-manager-flake/
-            homeConfigurations = builtins.listToAttrs (
-                builtins.map (username: {
-                    name = username;
-                    value = home-manager.lib.homeManagerConfiguration {
-                        inherit pkgs;
+          # See https://www.chrisportela.com/posts/home-manager-flake/
+          homeConfigurations = builtins.listToAttrs (builtins.map (username: {
+            name = username;
+            value = home-manager.lib.homeManagerConfiguration {
+              inherit pkgs;
 
-                        extraSpecialArgs = {
-                            userConfig = {
-                                inherit system;
-                                inherit username;
-                            };
-                        };
-                        
-                        modules = [ ./lib/home.nix ];
+              extraSpecialArgs = {
+                userConfig = {
+                  inherit system;
+                  inherit username;
+                };
+              };
+
+              modules = [ ./lib/home.nix ];
+            };
+          }) [ "1eedaegon" "dps0340" ]);
+          darwinConfigurations = builtins.listToAttrs (builtins.map (username: {
+            name = username;
+            value = nix-darwin.lib.darwinSystem {
+              system = "aarch64-darwin";
+              extraSpecialArgs = {
+                userConfig = {
+                  inherit system;
+                  inherit username;
+                };
+              };
+              modules = [
+                ./lib/darwin-settings.nix
+                home-manager.darwinModules.home-manager
+                {
+                  inherit pkgs;
+                  home-manager.useGlobalPkgs = true;
+                  home-manager.useUserPackages = true;
+                  home-manager.users.${username} = ./lib/home.nix;
+
+                  # Optionally, use home-manager.extraSpecialArgs to pass
+                  # arguments to home.nix
+                  extraSpecialArgs.extraSpecialArgs = {
+                    userConfig = {
+                      inherit system;
+                      inherit username;
                     };
-                }) [ "1eedaegon" "dps0340" ]
-            );
+                  };
+                }
+              ];
+            };
+          }) [ "1eedaegon" "dps0340" ]);
         };
-        darwinConfigurations = builtins.listToAttrs (
-                builtins.map (username: {
-                    name = username;
-                    value = nix-darwin.lib.darwinSystem {
-                        system = "aarch64-darwin";
-                        extraSpecialArgs = {
-                            userConfig = {
-                                inherit system;
-                                inherit username;
-                            };
-                        };
-                        modules = [
-                            ./lib/darwin-settings.nix
-                            home-manager.darwinModules.home-manager
-                            {
-                                inherit pkgs;
-                                home-manager.useGlobalPkgs = true;
-                                home-manager.useUserPackages = true;
-                                home-manager.users.${username} = ./lib/home.nix;
-
-                                # Optionally, use home-manager.extraSpecialArgs to pass
-                                # arguments to home.nix
-                                extraSpecialArgs.extraSpecialArgs = {
-                                    userConfig = {
-                                        inherit system;
-                                        inherit username;
-                                    };
-                                };
-                            }
-                        ];
-                    };
-                }) [ "1eedaegon" "dps0340" ]
-            );
-        }
-    );
+      });
 }
