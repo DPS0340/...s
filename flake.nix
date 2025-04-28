@@ -250,7 +250,7 @@
           darwinConfigurations = builtins.listToAttrs (builtins.map (username: {
             name = username;
             value = nix-darwin.lib.darwinSystem {
-              system = "aarch64-darwin";
+              system = system;
               # See https://github.com/nix-darwin/nix-darwin/issues/1045
               pkgs = import nixpkgs {
                   inherit system overlays;
