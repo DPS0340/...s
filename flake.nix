@@ -259,7 +259,8 @@
                 {
                   home-manager.useGlobalPkgs = true;
                   home-manager.useUserPackages = true;
-                  home-manager.users.${username} = ./lib/home.nix;
+
+                  home-manager.users.${username} = import ./lib/home.nix;
 
                   # Optionally, use home-manager.extraSpecialArgs to pass
                   # arguments to home.nix
