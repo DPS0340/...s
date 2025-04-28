@@ -65,6 +65,7 @@
       imgcat
       python3.12
       python3.12-conda
+      nixfmt
       direnv
       opentofu
       zoxide
