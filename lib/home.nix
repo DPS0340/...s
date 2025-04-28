@@ -5,8 +5,8 @@
   home.homeDirectory = if userConfig.system == "x86_64-darwin"
   || userConfig.system == "aarch64-darwin" then
     "/Users/${userConfig.username}"
-  else if userConfig.system == "x86_64-linux"
-  || userConfig.system  == "aarch64-linux" then
+  else if userConfig.system == "x86_64-linux" || userConfig.system
+  == "aarch64-linux" then
     "/home/${userConfig.username}"
     # Assuming windows based system
   else

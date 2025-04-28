@@ -3,26 +3,26 @@ let
   iterm2-settings = pkgs.stdenv.mkDerivation {
     name = "iterm2-settings";
     version = "1.0.0";
-    
+
     buildCommand = ''
       # Nix store에 설정 디렉토리 생성
       mkdir -p $out/share/iterm2
-      
+
       # 컬러 스키마 다운로드
       ${pkgs.curl}/bin/curl --cacert ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt -L https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/master/schemes/Snazzy.itermcolors -o $out/share/iterm2/Snazzy.itermcolors
-      
+
       # 설정 스크립트 생성
       mkdir -p $out/bin
       cat > $out/bin/setup-iterm2 << EOF
       #!/bin/sh
-      
+
       # iTerm2 설정 디렉토리
       ITERM2_DIR="\$HOME/Library/Application Support/iTerm2"
       mkdir -p "\$ITERM2_DIR"
-      
+
       # 컬러 스키마 복사
       ln -sf $out/share/iterm2/Snazzy.itermcolors "\$ITERM2_DIR/"
-      
+
       # 폰트 설정 (폰트가 설치되어 있는지 확인)
       if [ -f "\$HOME/Library/Fonts/Hack Regular Nerd Font Complete.ttf" ]; then
         # New Bookmarks 설정
@@ -48,10 +48,10 @@ let
       else
         echo "Warning: Hack Nerd Font not found. Please install it first."
       fi
-      
+
       # 설정 완료 표시
       touch "\$ITERM2_DIR/.nix-setup"
-      
+
       echo "iTerm2 설정이 완료되었습니다."
       echo "iTerm2를 재시작하면 설정이 적용됩니다."
       EOF
@@ -60,10 +60,10 @@ let
       # 제거 스크립트 생성
       cat > $out/bin/remove-iterm2 << EOF
       #!/bin/sh
-      
+
       # iTerm2 설정 디렉토리
       ITERM2_DIR="\$HOME/Library/Application Support/iTerm2"
-      
+
       # Nix로 설정된 파일들 제거
       if [ -f "\$ITERM2_DIR/.nix-setup" ]; then
         rm -f "\$ITERM2_DIR/Snazzy.itermcolors"
@@ -97,5 +97,7 @@ let
       $out/bin/remove-iterm2
     '';
   };
-in
-  if system == "x86_64-darwin" || system == "aarch64-darwin" then iterm2-settings else null
+in if system == "x86_64-darwin" || system == "aarch64-darwin" then
+  iterm2-settings
+else
+  null

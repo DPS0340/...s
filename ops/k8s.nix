@@ -13,12 +13,12 @@ mkEnv {
   ];
   shell = ''
     echo "Kubernetes Operations Environment"
-    
+
     # 유용한 alias
     alias k='kubectl'
     alias kctx='kubectx'
     alias kns='kubens'
-    
+
     kubectl version --client
     helm version --short
   '';

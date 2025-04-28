@@ -255,8 +255,8 @@
               system = system;
               # See https://github.com/nix-darwin/nix-darwin/issues/1045
               pkgs = import nixpkgs {
-                  inherit system overlays;
-                  config.allowUnfree = true;
+                inherit system overlays;
+                config.allowUnfree = true;
               };
               modules = [
                 ./lib/darwin-settings.nix
@@ -264,10 +264,10 @@
                 {
                   # See https://github.com/nix-community/home-manager/issues/6036#issuecomment-2466986456
                   users = {
-                      users.${username} = {
-                        name = username;
-                        home = "/Users/${username}";
-                      };
+                    users.${username} = {
+                      name = username;
+                      home = "/Users/${username}";
+                    };
                   };
                   home-manager = {
                     useGlobalPkgs = true;

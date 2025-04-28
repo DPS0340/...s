@@ -13,14 +13,14 @@ mkEnv {
   ];
   shell = ''
     echo "AWS Operations Environment"
-    
+
     # AWS 설정
     export AWS_PAGER=""
-    
+
     # 유용한 alias
     alias tf='terraform'
     alias tg='terragrunt'
-    
+
     aws --version
     terraform --version
   '';

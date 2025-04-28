@@ -14,21 +14,21 @@ mkEnv {
   ];
   shell = ''
     echo "Python Development Environment"
-    
+
     # virtualenv 설정
     if [ ! -d ".venv" ]; then
       echo "Creating virtual environment..."
       python -m venv .venv
     fi
-    
+
     # 환경 변수 설정
     export PYTHONPATH="$PWD:$PYTHONPATH"
-    
+
     # 유용한 alias
     alias py='python'
     alias ipy='ipython'
     alias pytest='python -m pytest'
-    
+
     python --version
     pip --version
     uv version
