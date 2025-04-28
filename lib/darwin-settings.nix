@@ -1,4 +1,4 @@
-{ pkgs, lib, inputs }:
+{ config, pkgs, lib, inputs }:
 
 # Original code from https://github.com/nix-darwin/nix-darwin/blob/master/modules/examples/simple.nix
 {
