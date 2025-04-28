@@ -253,12 +253,6 @@
             name = username;
             value = nix-darwin.lib.darwinSystem {
               system = "aarch64-darwin";
-              extraSpecialArgs = {
-                userConfig = {
-                  inherit system;
-                  inherit username;
-                };
-              };
               modules = [
                 ./lib/darwin-settings.nix
                 home-manager.darwinModules.home-manager
