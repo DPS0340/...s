@@ -2,6 +2,8 @@
 
 # Original code from https://github.com/nix-darwin/nix-darwin/blob/master/modules/examples/simple.nix
 {
+  # See https://github.com/nix-darwin/nix-darwin?tab=readme-ov-file#prerequisites
+  nix.enable = false;
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
   environment.systemPackages = [ ];
