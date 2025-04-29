@@ -228,6 +228,10 @@
       in {
         packages = mergeOutputsBy "packages";
         devShells = mergeOutputsBy "devShells";
+        home-manager = {
+          useUserPackages = true;
+          useGlobalPkgs = true;
+        };
         legacyPackages = {
           # See https://www.chrisportela.com/posts/home-manager-flake/
           homeConfigurations = builtins.listToAttrs (builtins.map (username: {
@@ -235,8 +239,6 @@
             value = home-manager.lib.homeManagerConfiguration {
               inherit pkgs;
 
-              useUserPackages = true;
-              useGlobalPkgs = true;
               extraSpecialArgs = {
                 userConfig = {
                   inherit system;
