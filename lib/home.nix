@@ -45,7 +45,7 @@
       obsidian
       kubectl
       kubectx
-      rustc
+      rustup
       vscode
       jetbrains-mono
       wezterm
