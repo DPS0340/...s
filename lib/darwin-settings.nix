@@ -8,6 +8,9 @@
   # $ nix-env -qaP | grep wget
   environment.systemPackages = [ ];
 
+  homebrew.enable = true;
+  homebrew.brews = [ orbstack macfuse onedrive ];
+
   # Enable alternative shell support in nix-darwin.
   # programs.fish.enable = true;
 
