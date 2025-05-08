@@ -9,7 +9,7 @@
   environment.systemPackages = [ ];
 
   homebrew.enable = true;
-  homebrew.brews = [ "orbstack" "macfuse" "onedrive" ];
+  homebrew.casks = [ "orbstack" "macfuse" "onedrive" ];
 
   # Enable alternative shell support in nix-darwin.
   # programs.fish.enable = true;
