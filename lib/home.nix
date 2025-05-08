@@ -27,6 +27,9 @@
       fira-code
       zsh
       zplug
+      zinit
+      eza
+      ctags
       neovim
       neovide
       tldr
@@ -64,6 +67,8 @@
       unzip
       imgcat
       python312Full
+      python312Packages.uv
+      pyenv
       micromamba
       nixfmt
       direnv
