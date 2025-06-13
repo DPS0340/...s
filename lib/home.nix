@@ -70,7 +70,7 @@
       python312Packages.uv
       pyenv
       micromamba
-      nixfmt
+      nixfmt-unstable
       direnv
       opentofu
       zoxide
