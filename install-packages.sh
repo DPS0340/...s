@@ -29,6 +29,6 @@ if [ $_OS == "darwin" ]; then
     fi
 fi
 
-$SWITCH_COMMAND switch --flake $DIR$_USER
+$SWITCH_COMMAND switch --flake $DIR#$_USER
 
 go install golang.org/x/tools/gopls@latest
