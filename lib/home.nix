@@ -80,6 +80,7 @@
       libxcrypt
       brave
       kubetail
+      windsurf
     ] ++ (if system == "x86_64-darwin" || system == "aarch64-darwin" then [
       # macOS-only packages
       iterm2
