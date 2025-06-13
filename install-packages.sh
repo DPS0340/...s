@@ -24,7 +24,7 @@ SWITCH_COMMAND="home-manager"
 
 if [ $_OS == "darwin" ]; then
     SWITCH_COMMAND="darwin-rebuild"
-    if ! darwin-rebuild; then
+    if ! command -v darwin-rebuild; then
         nix profile install nix-darwin/master#darwin-rebuild
     fi
 fi
