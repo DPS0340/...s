@@ -1,4 +1,11 @@
-{ config, pkgs, specialArgs, lib, inputs, ... }:
+{
+  config,
+  pkgs,
+  specialArgs,
+  lib,
+  inputs,
+  ...
+}:
 
 # Original code from https://github.com/nix-darwin/nix-darwin/blob/master/modules/examples/simple.nix
 {
@@ -9,8 +16,16 @@
   environment.systemPackages = [ ];
 
   homebrew.enable = true;
-  homebrew.brews = [ "openldap" "argon2" ];
-  homebrew.casks = [ "orbstack" "macfuse" "onedrive" ];
+  homebrew.brews = [
+    "openldap"
+    "argon2"
+  ];
+  homebrew.casks = [
+    "orbstack"
+    "macfuse"
+    "onedrive"
+    "wireshark"
+  ];
 
   # Enable alternative shell support in nix-darwin.
   # programs.fish.enable = true;
