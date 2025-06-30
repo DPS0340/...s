@@ -20,6 +20,7 @@
     "openldap"
     "argon2"
     "e2fsprogs"
+    "bfg"
   ];
   homebrew.casks = [
     "orbstack"
