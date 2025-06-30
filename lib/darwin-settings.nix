@@ -19,6 +19,7 @@
   homebrew.brews = [
     "openldap"
     "argon2"
+    "e2fsprogs"
   ];
   homebrew.casks = [
     "orbstack"
