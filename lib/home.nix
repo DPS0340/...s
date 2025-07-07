@@ -88,6 +88,7 @@
       windsurf
       wireshark
       code-cursor
+      clamav
     ]
     ++ (
       if system == "x86_64-darwin" || system == "aarch64-darwin" then
