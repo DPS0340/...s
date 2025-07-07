@@ -87,6 +87,7 @@
       kubetail
       windsurf
       wireshark
+      code-cursor
     ]
     ++ (
       if system == "x86_64-darwin" || system == "aarch64-darwin" then
