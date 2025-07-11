@@ -37,6 +37,7 @@
       ctags
       neovim
       neovide
+      nvimpager
       tldr
       gh
       bat
