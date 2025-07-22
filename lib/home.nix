@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   userConfig,
   ...
@@ -90,7 +91,6 @@
       wireshark
       code-cursor
       clamav
-      goldboot
     ]
     ++ (
       if system == "x86_64-darwin" || system == "aarch64-darwin" then
