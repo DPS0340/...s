@@ -1,6 +1,8 @@
 {
   config,
   pkgs,
+  lib,
+  craneLib,
   userConfig,
   ...
 }:
@@ -19,13 +21,22 @@
   home.stateVersion = "25.05";
   programs.home-manager.enable = true;
   fonts.fontconfig.enable = true; # 폰트 설정 활성화
+  home.activation = {
+    installCargoPackages = lib.hm.dag.entryAfter [ "installPackages" "rustup" ] ''
+      set -x
+      LIBICONV_PATH=$(nix eval --raw nixpkgs#libiconv.outPath)
+      LD_PATH=$(nix eval --raw nixpkgs#binutils.outPath)
+      rm -f /etc/profiles/per-user/$USER/bin/cc || true
+      ln -s /etc/profiles/per-user/$USER/bin/gcc /etc/profiles/per-user/$USER/bin/cc || true
+      PATH="$LD_PATH/bin:/etc/profiles/per-user/$USER/bin:$PATH" LDFLAGS="-L$LIBICONV_PATH/lib" /etc/profiles/per-user/$USER/bin/cargo install goldboot
+    '';
+  };
   home.packages =
     with pkgs;
     [
       nerd-fonts.symbols-only
       nerd-fonts.fira-code
       nerd-fonts.jetbrains-mono
-      coreutils-full
       opentofu
       openssh
       ansible
@@ -48,6 +59,7 @@
       nodejs
       gcc
       libiconv
+      coreutils-full
       fzf
       gnupg
       go
@@ -90,7 +102,6 @@
       wireshark
       code-cursor
       clamav
-      goldboot
     ]
     ++ (
       if system == "x86_64-darwin" || system == "aarch64-darwin" then
