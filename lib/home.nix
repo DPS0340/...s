@@ -91,6 +91,7 @@
       wireshark
       code-cursor
       clamav
+      ghidra-bin
     ]
     ++ (
       if system == "x86_64-darwin" || system == "aarch64-darwin" then
