@@ -20,6 +20,27 @@
   home.stateVersion = "25.05";
   programs.home-manager.enable = true;
   fonts.fontconfig.enable = true; # 폰트 설정 활성화
+
+  i18n = (if userConfig.system == "x86_64-linux" || userConfig.system == "aarch64-linux" then
+    {
+      inputMethod = {
+        enable = true;
+        type = "kime";
+        kime.extraConfig = ''
+          indicator:
+            icon_color: White
+          engine:
+            global_hotkeys:
+              C-Space:
+                behavior: !Toggle
+                - Hangul
+                - Latin
+                result: Consume
+        '';
+      };
+    }
+  else { });
+
   home.packages =
     with pkgs;
     [
@@ -94,13 +115,13 @@
       ghidra-bin
     ]
     ++ (
-      if system == "x86_64-darwin" || system == "aarch64-darwin" then
+      if userConfig.system == "x86_64-darwin" || userConfig.system == "aarch64-darwin" then
         [
           # macOS-only packages
           iterm2
           karabiner-elements
         ]
-      else if system == "x86_64-linux" || system == "aarch64-linux" then
+      else if userConfig.system == "x86_64-linux" || userConfig.system == "aarch64-linux" then
         [
           # Linux-only packages
           chromium
