@@ -220,6 +220,7 @@
           xclip # Clipboard
           glibc
           playonlinux
+          xrdp
         ]
       else
         [ ]
