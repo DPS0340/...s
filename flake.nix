@@ -15,16 +15,21 @@
       url = "github:nix-community/home-manager/release-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    wiremix = {
+      url = "github:tsowell/wiremix";
+      flake = true;
+    };
   };
 
   outputs =
     {
       self,
       nixpkgs,
-      flake-utils,
-      home-manager,
       nix-darwin,
+      flake-utils,
       rust-overlay,
+      home-manager,
+      wiremix,
       ...
     }:
     flake-utils.lib.eachDefaultSystem (
@@ -269,6 +274,9 @@
                     userConfig = {
                       inherit system;
                       inherit username;
+                    };
+                    extraPackages = {
+                      inherit wiremix;
                     };
                   };
 

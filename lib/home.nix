@@ -3,6 +3,7 @@
   lib,
   pkgs,
   userConfig,
+  extraPackages,
   ...
 }:
 
@@ -227,6 +228,7 @@
           glibc
           playonlinux
           xrdp
+          extraPackages.wiremix.packages.${userConfig.system}.default
           tor-browser
         ]
       else
