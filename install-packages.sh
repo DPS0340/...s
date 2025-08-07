@@ -8,7 +8,7 @@ DIR=$(dirname "$LOCATION")
 
 nix-channel --add https://nixos.org/channels/nixos-25.05 nixpkgs
 nix-channel --add https://nixos.org/channels/nixpkgs-unstable unstable
-nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+nix-channel --add https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz home-manager
 
 nix-channel --update
 
