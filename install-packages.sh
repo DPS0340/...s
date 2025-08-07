@@ -12,9 +12,6 @@ nix-channel --update
 
 nix-shell '<home-manager>' -A install
 
-export NIXPKGS_ALLOW_UNFREE=1
-export NIXPKGS_ALLOW_INSECURE=1
-
 _OS=$(uname | tr '[:upper:]' '[:lower:]')
 _ARCH=$(uname -m)
 _USER=$(whoami)
