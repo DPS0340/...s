@@ -206,6 +206,7 @@
       ghidra-bin
       cmctl
       mkpasswd
+      mc
     ]
     ++ (
       if userConfig.system == "x86_64-darwin" || userConfig.system == "aarch64-darwin" then
