@@ -226,6 +226,7 @@
           glibc
           playonlinux
           xrdp
+          tor-browser
         ]
       else
         [ ]
