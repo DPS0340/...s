@@ -189,7 +189,7 @@
       python312Packages.uv
       pyenv
       micromamba
-      nixfmt-rfc-style
+      nixfmt-classic
       direnv
       opentofu
       zoxide
