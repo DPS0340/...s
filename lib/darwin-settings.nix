@@ -27,6 +27,7 @@
     "macfuse"
     "onedrive"
     "wireshark"
+    "utm"
   ];
 
   # Enable alternative shell support in nix-darwin.
