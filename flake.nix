@@ -52,7 +52,7 @@
                     "--ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3";
                 };
                 slack = pkgs.symlinkJoin {
-                  name = "slack";
+                  name = prev.slack.name;
                   paths = [ prev.slack ];
                   buildInputs = [ pkgs.makeWrapper ];
                   postBuild = ''
@@ -60,9 +60,14 @@
                       --add-flags "--ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3"
                   '';
                 };
-                discord = prev.discord.override {
-                  commandLineArgs =
-                    "--ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3";
+                discord = pkgs.symlinkJoin {
+                  name = prev.discord.name;
+                  paths = [ prev.discord ];
+                  buildInputs = [ pkgs.makeWrapper ];
+                  postBuild = ''
+                    wrapProgram $out/bin/discord \
+                      --add-flags "--ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3"
+                  '';
                 };
               }
         )] else [] );
