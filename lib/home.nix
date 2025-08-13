@@ -115,7 +115,9 @@ in {
   xdg.desktopEntries = {
     "com.google.chrome" = {
       name = "Google Chrome";
-      exec = ". ${homeDirectory}/.xinitrc ; ${homeDirectory}/.nix-profile/bin/google-chrome -- %u";
+      exec = ''
+          ". ${homeDirectory}/.xinitrc ; ${homeDirectory}/.nix-profile/bin/google-chrome %u"
+      '';
       terminal = false;
       type = "Application";
       categories = [ "Application" "Network" "WebBrowser" ];
@@ -170,7 +172,9 @@ in {
 =======
     "brave-browser" = {
       name = "Brave";
-      exec = ". ${homeDirectory}/.xinitrc ; ${homeDirectory}/.nix-profile/bin/brave %u";
+      exec = ''
+          ". ${homeDirectory}/.xinitrc ; ${homeDirectory}/.nix-profile/bin/brave %u"
+      '';
       terminal = false;
       type = "Application";
       categories = [ "Application" "Network" "WebBrowser" ];
@@ -178,7 +182,9 @@ in {
     };
     "code" = {
       name = "Visual Studio Code";
-      exec = ". ${homeDirectory}/.xinitrc ; ${homeDirectory}/.nix-profile/bin/vscode %u";
+      exec = ''
+          ". ${homeDirectory}/.xinitrc ; ${homeDirectory}/.nix-profile/bin/code %u"
+      '';
       terminal = false;
       type = "Application";
       categories = [ "Application" ];
@@ -186,7 +192,9 @@ in {
     };
     "slack" = {
       name = "Slack";
-      exec = ". ${homeDirectory}/.xinitrc ; ${homeDirectory}/.nix-profile/bin/slack %u";
+      exec = ''
+          ". ${homeDirectory}/.xinitrc ; ${homeDirectory}/.nix-profile/bin/slack %u"
+      '';
       terminal = false;
       type = "Application";
       categories = [ "Application" ];
@@ -194,7 +202,9 @@ in {
     };
     "discord" = {
       name = "Discord";
-      exec = ". ${homeDirectory}/.xinitrc ; ${homeDirectory}/.nix-profile/bin/discord %u";
+      exec = ''
+          ". ${homeDirectory}/.xinitrc ; ${homeDirectory}/.nix-profile/bin/discord %u"
+      '';
       terminal = false;
       type = "Application";
       categories = [ "Application" ];
@@ -202,7 +212,9 @@ in {
     };
     "obsidian" = {
       name = "Obsidian";
-      exec = ". ${homeDirectory}/.xinitrc ; ${homeDirectory}/.nix-profile/bin/obsidian %u";
+      exec = ''
+          ". ${homeDirectory}/.xinitrc ; ${homeDirectory}/.nix-profile/bin/obsidian %u"
+      '';
       terminal = false;
       type = "Application";
       categories = [ "Application" "Network" "WebBrowser" ];
