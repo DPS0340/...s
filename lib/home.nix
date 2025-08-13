@@ -22,6 +22,34 @@
   programs.home-manager.enable = true;
   fonts.fontconfig.enable = true;
 
+  xdg.desktopEntries = {
+    google-chrome.settings = {
+      Exec = ''
+        google-chrome --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3
+      '';
+    };
+    brave.settings = {
+      Exec = ''
+        brave --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3
+      '';
+    };
+    vscode.settings = {
+      Exec = ''
+        vscode --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3
+      '';
+    };
+    slack.settings = {
+      Exec = ''
+        slack --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3
+      '';
+    };
+    discord.settings = {
+      Exec = ''
+        discord --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3
+      '';
+    };
+  };
+
   i18n = (if userConfig.system == "x86_64-linux" || userConfig.system == "aarch64-linux" then
     {
       inputMethod = {

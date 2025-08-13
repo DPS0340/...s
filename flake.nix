@@ -51,10 +51,6 @@
               commandLineArgs =
                 "--ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3";
             };
-            discord = prev.discord.override {
-              commandLineArgs =
-                "--ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3";
-            };
             slack = pkgs.symlinkJoin {
               name = "slack";
               paths = [ prev.slack ];
@@ -63,6 +59,10 @@
                 wrapProgram $out/bin/slack \
                   --add-flags "--ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3"
               '';
+            };
+            discord = prev.discord.override {
+              commandLineArgs =
+                "--ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3";
             };
           })]);
         pkgs = import nixpkgs {
