@@ -116,7 +116,7 @@ in {
     "com.google.chrome" = {
       name = "Google Chrome";
       exec = ''
-          ". ${homeDirectory}/.xinitrc ; ${homeDirectory}/.nix-profile/bin/google-chrome %u"
+          env GTK_IM_MODULE=kime SDL_IM_MODULE=kime QT_IM_MODULE=kime XMODIFIERS=@im=kime ${homeDirectory}/.nix-profile/bin/google-chrome %u
       '';
       terminal = false;
       type = "Application";
@@ -173,7 +173,7 @@ in {
     "brave-browser" = {
       name = "Brave";
       exec = ''
-          ". ${homeDirectory}/.xinitrc ; ${homeDirectory}/.nix-profile/bin/brave %u"
+          env GTK_IM_MODULE=kime SDL_IM_MODULE=kime QT_IM_MODULE=kime XMODIFIERS=@im=kime ${homeDirectory}/.nix-profile/bin/brave %u
       '';
       terminal = false;
       type = "Application";
@@ -183,7 +183,7 @@ in {
     "code" = {
       name = "Visual Studio Code";
       exec = ''
-          ". ${homeDirectory}/.xinitrc ; ${homeDirectory}/.nix-profile/bin/code %u"
+          env GTK_IM_MODULE=kime SDL_IM_MODULE=kime QT_IM_MODULE=kime XMODIFIERS=@im=kime ${homeDirectory}/.nix-profile/bin/code %u
       '';
       terminal = false;
       type = "Application";
@@ -193,7 +193,7 @@ in {
     "slack" = {
       name = "Slack";
       exec = ''
-          ". ${homeDirectory}/.xinitrc ; ${homeDirectory}/.nix-profile/bin/slack %u"
+          env GTK_IM_MODULE=kime SDL_IM_MODULE=kime QT_IM_MODULE=kime XMODIFIERS=@im=kime ${homeDirectory}/.nix-profile/bin/slack %u
       '';
       terminal = false;
       type = "Application";
@@ -203,7 +203,7 @@ in {
     "discord" = {
       name = "Discord";
       exec = ''
-          ". ${homeDirectory}/.xinitrc ; ${homeDirectory}/.nix-profile/bin/discord %u"
+          env GTK_IM_MODULE=kime SDL_IM_MODULE=kime QT_IM_MODULE=kime XMODIFIERS=@im=kime ${homeDirectory}/.nix-profile/bin/discord %u
       '';
       terminal = false;
       type = "Application";
@@ -213,7 +213,7 @@ in {
     "obsidian" = {
       name = "Obsidian";
       exec = ''
-          ". ${homeDirectory}/.xinitrc ; ${homeDirectory}/.nix-profile/bin/obsidian %u"
+          env GTK_IM_MODULE=kime SDL_IM_MODULE=kime QT_IM_MODULE=kime XMODIFIERS=@im=kime ${homeDirectory}/.nix-profile/bin/obsidian %u
       '';
       terminal = false;
       type = "Application";
