@@ -29,56 +29,7 @@
     , wiremix, youtube-music, ... }@inputs:
     flake-utils.lib.eachDefaultSystem (system:
       let
-        baseOverlays = [ (import rust-overlay) ];
-        # See https://discourse.nixos.org/t/ibus-not-working-with-electron-apps/64128/12
-        # And https://discourse.nixos.org/t/partly-overriding-a-desktop-entry/20743/2
-        overlays = baseOverlays
-          ++ (if system == "x86_64-linux" || system == "aarch64-linux" then
-            [
-              (final: prev: {
-                google-chrome = prev.google-chrome.override {
-                  commandLineArgs =
-                    "--ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3";
-                };
-                brave = prev.brave.override {
-                  commandLineArgs =
-                    "--ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3";
-                };
-                vscode = prev.vscode.override {
-                  commandLineArgs =
-                    "--ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3";
-                };
-                slack = pkgs.symlinkJoin {
-                  name = prev.slack.name;
-                  paths = [ prev.slack ];
-                  buildInputs = [ pkgs.makeWrapper ];
-                  postBuild = ''
-                    wrapProgram $out/bin/slack \
-                      --add-flags "--ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3"
-                  '';
-                };
-                discord = pkgs.symlinkJoin {
-                  name = prev.discord.name;
-                  paths = [ prev.discord ];
-                  buildInputs = [ pkgs.makeWrapper ];
-                  postBuild = ''
-                    wrapProgram $out/bin/discord \
-                      --add-flags "--ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3"
-                  '';
-                };
-                obsidian = pkgs.symlinkJoin {
-                  name = prev.obsidian.name;
-                  paths = [ prev.obsidian ];
-                  buildInputs = [ pkgs.makeWrapper ];
-                  postBuild = ''
-                    wrapProgram $out/bin/obsidian \
-                      --add-flags "--ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3"
-                  '';
-                };
-              })
-            ]
-          else
-            [ ]);
+        overlays = [ (import rust-overlay) ];
         pkgs = import nixpkgs {
           inherit system overlays;
           config.allowUnfree = true;
