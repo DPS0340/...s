@@ -22,31 +22,47 @@
   programs.home-manager.enable = true;
   fonts.fontconfig.enable = true;
 
+  # See https://discourse.nixos.org/t/partly-overriding-a-desktop-entry/20743
   xdg.desktopEntries = {
-    google-chrome.settings = {
-      Exec = ''
-        google-chrome --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3
-      '';
+    google-chrome = {
+      name = "google-chrome";
+      exec = "google-chrome -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
+      terminal = false;
+      type = "Application";
+      categories = [ "Application" "Network" "WebBrowser" ];
+      mimeType = [ "text/html" "text/xml" ];
     };
-    brave.settings = {
-      Exec = ''
-        brave --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3
-      '';
+    brave = {
+      name = "brave";
+      exec = "brave -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
+      terminal = false;
+      type = "Application";
+      categories = [ "Application" "Network" "WebBrowser" ];
+      mimeType = [ "text/html" "text/xml" ];
     };
-    vscode.settings = {
-      Exec = ''
-        vscode --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3
-      '';
+    vscode = {
+      name = "vscode";
+      exec = "vscode -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
+      terminal = false;
+      type = "Application";
+      categories = [ "Application" ];
+      mimeType = [ "text/html" "text/xml" ];
     };
-    slack.settings = {
-      Exec = ''
-        slack --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3
-      '';
+    slack = {
+      name = "slack";
+      exec = "slack -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
+      terminal = false;
+      type = "Application";
+      categories = [ "Application" ];
+      mimeType = [ "text/html" "text/xml" ];
     };
-    discord.settings = {
-      Exec = ''
-        discord --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3
-      '';
+    discord = {
+      name = "discord";
+      exec = "discord -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
+      terminal = false;
+      type = "Application";
+      categories = [ "Application" ];
+      mimeType = [ "text/html" "text/xml" ];
     };
   };
 
@@ -150,6 +166,11 @@
       cmctl
       mkpasswd
       mc
+      google-chrome
+      brave
+      vscode
+      slack
+      discord
     ]
     ++ (
       if userConfig.system == "x86_64-darwin" || userConfig.system == "aarch64-darwin" then
@@ -175,42 +196,6 @@
           xrdp
           extraPackages.wiremix.packages.${userConfig.system}.default
           tor-browser
-          # See https://discourse.nixos.org/t/partly-overriding-a-desktop-entry/20743
-          google-chrome.overrideAttrs (e: rec {
-            desktopItem = e.desktopItem.override (d: {
-              exec = "${d.exec} --ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3";
-            });
-
-            installPhase = builtins.replaceStrings [ "${e.desktopItem}" ] [ "${desktopItem}" ] e.installPhase;
-          })
-          brave.overrideAttrs (e: rec {
-            desktopItem = e.desktopItem.override (d: {
-              exec = "${d.exec} --ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3";
-            });
-
-            installPhase = builtins.replaceStrings [ "${e.desktopItem}" ] [ "${desktopItem}" ] e.installPhase;
-          })
-          vscode.overrideAttrs (e: rec {
-            desktopItem = e.desktopItem.override (d: {
-              exec = "${d.exec} --ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3";
-            });
-
-            installPhase = builtins.replaceStrings [ "${e.desktopItem}" ] [ "${desktopItem}" ] e.installPhase;
-          })
-          slack.overrideAttrs (e: rec {
-            desktopItem = e.desktopItem.override (d: {
-              exec = "${d.exec} --ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3";
-            });
-
-            installPhase = builtins.replaceStrings [ "${e.desktopItem}" ] [ "${desktopItem}" ] e.installPhase;
-          })
-          discord.overrideAttrs (e: rec {
-            desktopItem = e.desktopItem.override (d: {
-              exec = "${d.exec} --ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3";
-            });
-
-            installPhase = builtins.replaceStrings [ "${e.desktopItem}" ] [ "${desktopItem}" ] e.installPhase;
-          })
         ]
       else
         [ ]

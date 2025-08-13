@@ -37,6 +37,7 @@
       let
         baseOverlays = [ (import rust-overlay) ];
         # See https://discourse.nixos.org/t/ibus-not-working-with-electron-apps/64128/12
+        # And https://discourse.nixos.org/t/partly-overriding-a-desktop-entry/20743/2
         overlays = baseOverlays ++ (if system == "x86_64-linux" || system == "aarch64-linux" then
               [(final: prev: {
                 google-chrome = prev.google-chrome.override {
@@ -69,8 +70,8 @@
                       --add-flags "--ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3"
                   '';
                 };
-              }
-        )] else [] );
+              })]
+        else [] );
         pkgs = import nixpkgs {
           inherit system overlays;
           config.allowUnfree = true;
