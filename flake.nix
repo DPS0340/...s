@@ -269,6 +269,31 @@
                 name = username;
                 value = home-manager.lib.homeManagerConfiguration {
                   inherit pkgs;
+                  
+                  overlays = [(final: prev: {
+                    google-chrome = prev.google-chrome.override {
+                      commandLineArgs =
+                        "--ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3";
+                    };
+                    brave = prev.brave.override {
+                      commandLineArgs =
+                        "--ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3";
+                    };
+                    vscode = prev.vscode.override {
+                      commandLineArgs =
+                        "--ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3";
+                    };
+                    slack = pkgs.symlinkJoin {
+                      name = "slack";
+                      paths = [ prev.slack ];
+                      buildInputs = [ pkgs.makeWrapper ];
+                      postBuild = ''
+                        wrapProgram $out/bin/slack \
+                          --add-flags "--ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3"
+                      '';
+                    };
+                  })];
+
 
                   extraSpecialArgs = {
                     userConfig = {
