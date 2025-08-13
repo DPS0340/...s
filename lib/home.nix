@@ -114,7 +114,6 @@
       kubectl
       kubectx
       rustup
-      vscode
       jetbrains-mono
       wezterm
       lazygit
@@ -140,10 +139,8 @@
       opentofu
       zoxide
       htop
-      slack
       pure-prompt
       libxcrypt
-      brave
       kubetail
       windsurf
       wireshark
@@ -160,6 +157,10 @@
           # macOS-only packages
           iterm2
           karabiner-elements
+          brave
+          vscode
+          slack
+          discord
         ]
       else if userConfig.system == "x86_64-linux" || userConfig.system == "aarch64-linux" then
         [
@@ -167,7 +168,6 @@
           chromium
           jetbrains.idea-ultimate
           kime
-          google-chrome
           firefox
           xclip # Clipboard
           glibc
@@ -175,6 +175,42 @@
           xrdp
           extraPackages.wiremix.packages.${userConfig.system}.default
           tor-browser
+          # See https://discourse.nixos.org/t/partly-overriding-a-desktop-entry/20743
+          google-chrome.overrideAttrs (e: rec {
+            desktopItem = e.desktopItem.override (d: {
+              exec = "${d.exec} --ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3";
+            });
+
+            installPhase = builtins.replaceStrings [ "${e.desktopItem}" ] [ "${desktopItem}" ] e.installPhase;
+          })
+          brave.overrideAttrs (e: rec {
+            desktopItem = e.desktopItem.override (d: {
+              exec = "${d.exec} --ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3";
+            });
+
+            installPhase = builtins.replaceStrings [ "${e.desktopItem}" ] [ "${desktopItem}" ] e.installPhase;
+          })
+          vscode.overrideAttrs (e: rec {
+            desktopItem = e.desktopItem.override (d: {
+              exec = "${d.exec} --ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3";
+            });
+
+            installPhase = builtins.replaceStrings [ "${e.desktopItem}" ] [ "${desktopItem}" ] e.installPhase;
+          })
+          slack.overrideAttrs (e: rec {
+            desktopItem = e.desktopItem.override (d: {
+              exec = "${d.exec} --ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3";
+            });
+
+            installPhase = builtins.replaceStrings [ "${e.desktopItem}" ] [ "${desktopItem}" ] e.installPhase;
+          })
+          discord.overrideAttrs (e: rec {
+            desktopItem = e.desktopItem.override (d: {
+              exec = "${d.exec} --ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3";
+            });
+
+            installPhase = builtins.replaceStrings [ "${e.desktopItem}" ] [ "${desktopItem}" ] e.installPhase;
+          })
         ]
       else
         [ ]
