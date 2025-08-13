@@ -27,4 +27,9 @@ fi
 
 $SWITCH_COMMAND switch --flake path://$DIR#$_USER
 
+if [ $_OS == "linux" ]; then
+    sudo update-desktop-database ~/.nix-profile/share/applications
+fi
+
 go install golang.org/x/tools/gopls@latest
+
