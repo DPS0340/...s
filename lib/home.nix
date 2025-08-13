@@ -7,9 +7,9 @@
   ...
 }:
 
-{
-  home.username = userConfig.username;
-  home.homeDirectory =
+let
+
+homeDirectory = 
     if userConfig.system == "x86_64-darwin" || userConfig.system == "aarch64-darwin" then
       "/Users/${userConfig.username}"
     else if userConfig.system == "x86_64-linux" || userConfig.system == "aarch64-linux" then
@@ -17,6 +17,12 @@
     # Assuming windows based system
     else
       "C:\\Users\\${userConfig.username}";
+
+in
+
+{
+  home.username = userConfig.username;
+  home.homeDirectory = homeDirectory;
 
   home.stateVersion = "25.05";
   programs.home-manager.enable = true;
@@ -26,7 +32,7 @@
   xdg.desktopEntries = {
     google-chrome = {
       name = "google-chrome";
-      exec = "google-chrome -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
+      exec = "${homeDirectory}/.nix-profile/bin/google-chrome -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
       terminal = false;
       type = "Application";
       categories = [ "Application" "Network" "WebBrowser" ];
@@ -34,7 +40,7 @@
     };
     brave = {
       name = "brave";
-      exec = "brave -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
+      exec = "${homeDirectory}/.nix-profile/bin/brave -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
       terminal = false;
       type = "Application";
       categories = [ "Application" "Network" "WebBrowser" ];
@@ -42,7 +48,7 @@
     };
     vscode = {
       name = "vscode";
-      exec = "vscode -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
+      exec = "${homeDirectory}/.nix-profile/bin/vscode -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
       terminal = false;
       type = "Application";
       categories = [ "Application" ];
@@ -50,7 +56,7 @@
     };
     slack = {
       name = "slack";
-      exec = "slack -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
+      exec = "${homeDirectory}/.nix-profile/bin/slack -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
       terminal = false;
       type = "Application";
       categories = [ "Application" ];
@@ -58,7 +64,7 @@
     };
     discord = {
       name = "discord";
-      exec = "discord -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
+      exec = "${homeDirectory}/.nix-profile/bin/discord -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
       terminal = false;
       type = "Application";
       categories = [ "Application" ];
