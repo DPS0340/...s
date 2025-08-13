@@ -70,6 +70,15 @@
                       --add-flags "--ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3"
                   '';
                 };
+                obsidian = pkgs.symlinkJoin {
+                  name = prev.obsidian.name;
+                  paths = [ prev.obsidian ];
+                  buildInputs = [ pkgs.makeWrapper ];
+                  postBuild = ''
+                    wrapProgram $out/bin/obsidian \
+                      --add-flags "--ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3"
+                  '';
+                };
               })]
         else [] );
         pkgs = import nixpkgs {
