@@ -72,33 +72,116 @@ in
     };
   };
 
-  i18n = (if userConfig.system == "x86_64-linux" || userConfig.system == "aarch64-linux" then
-    {
-      inputMethod = {
-        enable = true;
-        type = "fcitx5";
-        fcitx5 = {
-          waylandFrontend = true;
-          addons = with pkgs; [
-            fcitx5-gtk
-            fcitx5-hangul
-          ];
-          settings = {
-            inputMethod = {
-              GroupOrder."0" = "Default";
-              "Groups/0" = {
-                Name = "Default";
-                "Default Layout" = "us";
-                DefaultIM = "keyboard-us";
-              };
-              "Groups/0/Items/0".Name = "keyboard-us";
-              "Groups/0/Items/1".Name = "hangul";
-            };
-          };
+  i18n = (
+    if userConfig.system == "x86_64-linux" || userConfig.system == "aarch64-linux" then
+      {
+        inputMethod = {
+          enable = true;
+          type = "kime";
+          kime.extraConfig = ''
+            daemon:
+              modules:
+              - Xim
+              - Wayland
+              - Indicator
+            indicator:
+              icon_color: White
+            log:
+              global_level: DEBUG
+            engine:
+              translation_layer: null
+              default_category: Latin
+              global_category_state: false
+              global_hotkeys:
+                M-C-Backslash:
+                  behavior: !Mode Math
+                  result: ConsumeIfProcessed 
+                C-Space:
+                  behavior: !Toggle
+                  - Hangul
+                  - Latin
+                  result: Consume
+                M-C-E:
+                  behavior: !Mode Emoji
+                  result: ConsumeIfProcessed
+                Esc:
+                  behavior: !Switch Latin
+                  result: Bypass
+                Muhenkan:
+                  behavior: !Toggle
+                  - Hangul
+                  - Latin
+                  result: Consume
+                AltR:
+                  behavior: !Toggle
+                  - Hangul
+                  - Latin
+                  result: Consume
+                ControlR:
+                  behavior: !Toggle
+                  - Hangul
+                  - Latin
+                  result: Consume
+                Hangul:
+                  behavior: !Toggle
+                  - Hangul
+                  - Latin
+                  result: Consume
+              category_hotkeys:
+                Hangul:
+                  # ControlR:
+                  #   behavior: !Mode Hanja
+                  #   result: Consume
+                  HangulHanja:
+                    behavior: !Mode Hanja
+                    result: Consume
+                  F9:
+                    behavior: !Mode Hanja
+                    result: ConsumeIfProcessed
+              mode_hotkeys:
+                Math:
+                  Enter:
+                    behavior: Commit
+                    result: ConsumeIfProcessed
+                  Tab:
+                    behavior: Commit
+                    result: ConsumeIfProcessed
+                Hanja:
+                  Enter:
+                    behavior: Commit
+                    result: ConsumeIfProcessed
+                  Tab:
+                    behavior: Commit
+                    result: ConsumeIfProcessed
+                Emoji:
+                  Enter:
+                    behavior: Commit
+                    result: ConsumeIfProcessed
+                  Tab:
+                    behavior: Commit
+                    result: ConsumeIfProcessed
+              candidate_font: Noto Sans CJK KR
+              xim_preedit_font:
+              - Noto Sans CJK KR
+              - 15.0
+              latin:
+                layout: Qwerty
+                preferred_direct: true
+              hangul:
+                layout: dubeolsik
+                word_commit: false
+                preedit_johab: Needed
+                addons:
+                  all: []
+                  # - ComposeChoseongSsang
+                  dubeolsik:
+                  - TreatJongseongAsChoseong
+          '';
         };
-      };
-    }
-  else { });
+      }
+    else
+      { }
+  );
 
   home.packages =
     with pkgs;
