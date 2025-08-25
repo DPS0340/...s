@@ -13,6 +13,8 @@ let
     "C:\\Users\\${userConfig.username}";
 
 in {
+  imports = [ extraPackages.youtube-music.homeManagerModules.default ];
+
   home.username = userConfig.username;
   home.homeDirectory = homeDirectory;
 
@@ -195,6 +197,23 @@ in {
   } else
     { });
 
+  programs.youtube-music = {
+    enable = true;
+    options = { tray = true; };
+    plugins = {
+      adblocker = { enabled = true; };
+      bypass-age-restrictions = { enabled = true; };
+      downloader = { enabled = true; };
+      precise-volume = { enabled = true; };
+      quality-changer = { enabled = true; };
+      synced-lyrics = { enabled = true; };
+      lyrics-genius = {
+        enabled = true;
+        romanizedLyrics = true;
+      };
+    };
+  };
+
   home.packages = with pkgs;
     [
       nerd-fonts.symbols-only
@@ -272,7 +291,6 @@ in {
       slack
       discord
       fastfetch
-      youtube-music
     ] ++ (if userConfig.system == "x86_64-darwin" || userConfig.system
     == "aarch64-darwin" then [
       # macOS-only packages

@@ -19,27 +19,23 @@
       url = "github:tsowell/wiremix";
       flake = true;
     };
+    youtube-music = {
+      url = "github:h-banii/youtube-music-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs =
-    {
-      self,
-      nixpkgs,
-      nix-darwin,
-      flake-utils,
-      rust-overlay,
-      home-manager,
-      wiremix,
-      ...
-    }:
-    flake-utils.lib.eachDefaultSystem (
-      system:
+  outputs = { self, nixpkgs, nix-darwin, flake-utils, rust-overlay, home-manager
+    , wiremix, ... }:
+    flake-utils.lib.eachDefaultSystem (system:
       let
         baseOverlays = [ (import rust-overlay) ];
         # See https://discourse.nixos.org/t/ibus-not-working-with-electron-apps/64128/12
         # And https://discourse.nixos.org/t/partly-overriding-a-desktop-entry/20743/2
-        overlays = baseOverlays ++ (if system == "x86_64-linux" || system == "aarch64-linux" then
-              [(final: prev: {
+        overlays = baseOverlays
+          ++ (if system == "x86_64-linux" || system == "aarch64-linux" then
+            [
+              (final: prev: {
                 google-chrome = prev.google-chrome.override {
                   commandLineArgs =
                     "--ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3";
@@ -79,8 +75,10 @@
                       --add-flags "--ozone-platform-hint=auto --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3"
                   '';
                 };
-              })]
-        else [] );
+              })
+            ]
+          else
+            [ ]);
         pkgs = import nixpkgs {
           inherit system overlays;
           config.allowUnfree = true;
@@ -98,13 +96,13 @@
           xorg.xeyes
         ];
 
-        commonShellHooks = import ./lib/common-shell-hook.nix { inherit pkgs system; };
+        commonShellHooks =
+          import ./lib/common-shell-hook.nix { inherit pkgs system; };
 
         # Default environment definition
         defaultEnv = {
           name = "default";
-          pkgList =
-            with pkgs;
+          pkgList = with pkgs;
             [
               nerd-fonts.symbols-only
               nerd-fonts.fira-code
@@ -119,44 +117,37 @@
               gcc
               gnumake
             ]
-            ++ (
-              if system == "x86_64-darwin" || system == "aarch64-darwin" then
-                [
-                  # macOS-only packages
-                  coreutils
-                  # (import ./lib/iterm2-settings.nix { inherit pkgs system; })
-                ]
-              else if system == "x86_64-linux" || system == "aarch64-linux" then
-                [
-                  # Linux-only packages
-                  systemd
-                ]
-              else
-                [ ]
-            );
+            ++ (if system == "x86_64-darwin" || system == "aarch64-darwin" then
+              [
+                # macOS-only packages
+                coreutils
+                # (import ./lib/iterm2-settings.nix { inherit pkgs system; })
+              ]
+            else if system == "x86_64-linux" || system == "aarch64-linux" then
+              [
+                # Linux-only packages
+                systemd
+              ]
+            else
+              [ ]);
           shell = commonShellHooks;
         };
 
-        mkEnv =
-          {
-            name,
-            pkgList ? [ ],
-            shell ? "",
-            combine ? [ ],
-          }:
+        mkEnv = { name, pkgList ? [ ], shell ? "", combine ? [ ], }:
           let
             # Combine Pkgs
-            combinedPkgList =
-              if combine != [ ] then pkgList ++ builtins.concatMap (env: env.pkgList) combine else pkgList;
+            combinedPkgList = if combine != [ ] then
+              pkgList ++ builtins.concatMap (env: env.pkgList) combine
+            else
+              pkgList;
 
             # Combine Shell
-            combinedShell =
-              if combine != [ ] then
-                shell + builtins.concatStringsSep "\n" (builtins.map (env: env.shell) combine)
-              else
-                shell;
-          in
-          {
+            combinedShell = if combine != [ ] then
+              shell + builtins.concatStringsSep "\n"
+              (builtins.map (env: env.shell) combine)
+            else
+              shell;
+          in {
             inherit name;
             pkgList = combinedPkgList;
             shell = combinedShell;
@@ -203,12 +194,7 @@
             name = "rust";
             pkgList = with pkgs; [
               (rust-bin.stable.latest.default.override {
-                extensions = [
-                  "rust-src"
-                  "rust-analyzer"
-                  "clippy"
-                  "rustfmt"
-                ];
+                extensions = [ "rust-src" "rust-analyzer" "clippy" "rustfmt" ];
               })
               pkg-config
               openssl.dev
@@ -283,23 +269,20 @@
               echo "###############"
               echo "               "
             '';
-            combine = [
-              environments.py
-              environments.go
-              environments.rust
-            ];
+            combine = [ environments.py environments.go environments.rust ];
           };
         };
 
         # Generate outputs for all environments
-        allOutputs = builtins.mapAttrs (name: env: env.toOutputs defaultEnv) environments;
+        allOutputs =
+          builtins.mapAttrs (name: env: env.toOutputs defaultEnv) environments;
 
         # packages and devShells merge
-        mergeOutputsBy =
-          attr: builtins.foldl' (acc: outputs: acc // outputs.${attr}) { } (builtins.attrValues allOutputs);
+        mergeOutputsBy = attr:
+          builtins.foldl' (acc: outputs: acc // outputs.${attr}) { }
+          (builtins.attrValues allOutputs);
 
-      in
-      {
+      in {
         packages = mergeOutputsBy "packages";
         devShells = mergeOutputsBy "devShells";
         home-manager = {
@@ -308,78 +291,64 @@
         };
         legacyPackages = {
           # See https://www.chrisportela.com/posts/home-manager-flake/
-          homeConfigurations = builtins.listToAttrs (
-            builtins.map
-              (username: {
-                name = username;
-                value = home-manager.lib.homeManagerConfiguration {
-                  inherit pkgs;
+          homeConfigurations = builtins.listToAttrs (builtins.map (username: {
+            name = username;
+            value = home-manager.lib.homeManagerConfiguration {
+              inherit pkgs;
 
-                  extraSpecialArgs = {
-                    userConfig = {
-                      inherit system;
-                      inherit username;
-                    };
-                    extraPackages = {
-                      inherit wiremix;
+              extraSpecialArgs = {
+                userConfig = {
+                  inherit system;
+                  inherit username;
+                };
+                extraPackages = {
+                  inherit wiremix;
+                  inherit youtube-music;
+                };
+              };
+
+              modules = [ ./lib/home.nix ];
+            };
+          }) [ "1eedaegon" "dps0340" ]);
+          darwinConfigurations = builtins.listToAttrs (builtins.map (username: {
+            name = username;
+            value = nix-darwin.lib.darwinSystem {
+              system = system;
+              # See https://github.com/nix-darwin/nix-darwin/issues/1045
+              pkgs = import nixpkgs {
+                inherit system overlays;
+                config.allowUnfree = true;
+              };
+              modules = [
+                ./lib/darwin-settings.nix
+                home-manager.darwinModules.home-manager
+                {
+                  # See https://github.com/nix-community/home-manager/issues/6036#issuecomment-2466986456
+                  users = {
+                    users.${username} = {
+                      name = username;
+                      home = "/Users/${username}";
                     };
                   };
+                  home-manager = {
+                    useGlobalPkgs = true;
+                    useUserPackages = true;
 
-                  modules = [ ./lib/home.nix ];
-                };
-              })
-              [
-                "1eedaegon"
-                "dps0340"
-              ]
-          );
-          darwinConfigurations = builtins.listToAttrs (
-            builtins.map
-              (username: {
-                name = username;
-                value = nix-darwin.lib.darwinSystem {
-                  system = system;
-                  # See https://github.com/nix-darwin/nix-darwin/issues/1045
-                  pkgs = import nixpkgs {
-                    inherit system overlays;
-                    config.allowUnfree = true;
+                    users.${username} = ./lib/home.nix;
+
+                    # Optionally, use home-manager.extraSpecialArgs to pass
+                    # arguments to home.nix
+                    extraSpecialArgs = {
+                      userConfig = {
+                        inherit system;
+                        inherit username;
+                      };
+                    };
                   };
-                  modules = [
-                    ./lib/darwin-settings.nix
-                    home-manager.darwinModules.home-manager
-                    {
-                      # See https://github.com/nix-community/home-manager/issues/6036#issuecomment-2466986456
-                      users = {
-                        users.${username} = {
-                          name = username;
-                          home = "/Users/${username}";
-                        };
-                      };
-                      home-manager = {
-                        useGlobalPkgs = true;
-                        useUserPackages = true;
-
-                        users.${username} = ./lib/home.nix;
-
-                        # Optionally, use home-manager.extraSpecialArgs to pass
-                        # arguments to home.nix
-                        extraSpecialArgs = {
-                          userConfig = {
-                            inherit system;
-                            inherit username;
-                          };
-                        };
-                      };
-                    }
-                  ];
-                };
-              })
-              [
-                "1eedaegon"
-                "lee"
-              ]
-          );
+                }
+              ];
+            };
+          }) [ "1eedaegon" "lee" ]);
         };
-      }
-    );
+      });
 }
