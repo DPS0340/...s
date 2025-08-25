@@ -26,7 +26,7 @@
   };
 
   outputs = { self, nixpkgs, nix-darwin, flake-utils, rust-overlay, home-manager
-    , wiremix, ... }:
+    , wiremix, youtube-music, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         baseOverlays = [ (import rust-overlay) ];
