@@ -290,10 +290,7 @@
           useGlobalPkgs = true;
           users = builtins.listToAttrs (builtins.map (username: {
             name = username;
-            value = {
-              imports =
-                [ extraPackages.youtube-music.homeManagerModules.default ];
-            };
+            value = { imports = [ youtube-music.homeManagerModules.default ]; };
           }) [ "1eedaegon" "dps0340" ]);
         };
         legacyPackages = {
