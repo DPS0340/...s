@@ -13,7 +13,6 @@ let
     "C:\\Users\\${userConfig.username}";
 
 in {
-  imports = [ extraPackages.youtube-music.homeManagerModules.default ];
 
   home.username = userConfig.username;
   home.homeDirectory = homeDirectory;

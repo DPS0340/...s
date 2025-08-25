@@ -288,6 +288,13 @@
         home-manager = {
           useUserPackages = true;
           useGlobalPkgs = true;
+          users = builtins.listToAttrs (builtins.map (username: {
+            name = username;
+            value = {
+              imports =
+                [ extraPackages.youtube-music.homeManagerModules.default ];
+            };
+          }) [ "1eedaegon" "dps0340" ]);
         };
         legacyPackages = {
           # See https://www.chrisportela.com/posts/home-manager-flake/
