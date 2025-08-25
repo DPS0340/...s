@@ -1,26 +1,18 @@
-{
-  config,
-  lib,
-  pkgs,
-  userConfig,
-  extraPackages,
-  ...
-}:
+{ config, lib, pkgs, userConfig, extraPackages, ... }:
 
 let
 
-homeDirectory = 
-    if userConfig.system == "x86_64-darwin" || userConfig.system == "aarch64-darwin" then
-      "/Users/${userConfig.username}"
-    else if userConfig.system == "x86_64-linux" || userConfig.system == "aarch64-linux" then
-      "/home/${userConfig.username}"
+  homeDirectory = if userConfig.system == "x86_64-darwin" || userConfig.system
+  == "aarch64-darwin" then
+    "/Users/${userConfig.username}"
+  else if userConfig.system == "x86_64-linux" || userConfig.system
+  == "aarch64-linux" then
+    "/home/${userConfig.username}"
     # Assuming windows based system
-    else
-      "C:\\Users\\${userConfig.username}";
+  else
+    "C:\\Users\\${userConfig.username}";
 
-in
-
-{
+in {
   home.username = userConfig.username;
   home.homeDirectory = homeDirectory;
 
@@ -32,7 +24,8 @@ in
   xdg.desktopEntries = {
     "com.google.chrome" = {
       name = "Google Chrome";
-      exec = "${homeDirectory}/.nix-profile/bin/google-chrome -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
+      exec =
+        "${homeDirectory}/.nix-profile/bin/google-chrome -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
       terminal = false;
       type = "Application";
       categories = [ "Application" "Network" "WebBrowser" ];
@@ -40,7 +33,8 @@ in
     };
     "brave-browser" = {
       name = "Brave";
-      exec = "${homeDirectory}/.nix-profile/bin/brave -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
+      exec =
+        "${homeDirectory}/.nix-profile/bin/brave -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
       terminal = false;
       type = "Application";
       categories = [ "Application" "Network" "WebBrowser" ];
@@ -48,7 +42,8 @@ in
     };
     "code" = {
       name = "Visual Studio Code";
-      exec = "${homeDirectory}/.nix-profile/bin/vscode -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
+      exec =
+        "${homeDirectory}/.nix-profile/bin/vscode -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
       terminal = false;
       type = "Application";
       categories = [ "Application" ];
@@ -56,7 +51,8 @@ in
     };
     "slack" = {
       name = "Slack";
-      exec = "${homeDirectory}/.nix-profile/bin/slack -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
+      exec =
+        "${homeDirectory}/.nix-profile/bin/slack -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
       terminal = false;
       type = "Application";
       categories = [ "Application" ];
@@ -64,7 +60,8 @@ in
     };
     "discord" = {
       name = "Discord";
-      exec = "${homeDirectory}/.nix-profile/bin/discord -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
+      exec =
+        "${homeDirectory}/.nix-profile/bin/discord -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
       terminal = false;
       type = "Application";
       categories = [ "Application" ];
@@ -72,7 +69,8 @@ in
     };
     "obsidian" = {
       name = "Obsidian";
-      exec = "${homeDirectory}/.nix-profile/bin/obsidian -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
+      exec =
+        "${homeDirectory}/.nix-profile/bin/obsidian -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
       terminal = false;
       type = "Application";
       categories = [ "Application" "Network" "WebBrowser" ];
@@ -80,124 +78,120 @@ in
     };
   };
 
-  i18n = (
-    if userConfig.system == "x86_64-linux" || userConfig.system == "aarch64-linux" then
-      {
-        inputMethod = {
-          enable = true;
-          type = "kime";
-          kime.extraConfig = ''
-            daemon:
-              modules:
-              - Xim
-              - Wayland
-              - Indicator
-            indicator:
-              icon_color: White
-            log:
-              global_level: DEBUG
-            engine:
-              translation_layer: null
-              default_category: Latin
-              global_category_state: false
-              global_hotkeys:
-                M-C-Backslash:
-                  behavior: !Mode Math
-                  result: ConsumeIfProcessed 
-                C-Space:
-                  behavior: !Toggle
-                  - Hangul
-                  - Latin
-                  result: Consume
-                S-Space:
-                  behavior: !Toggle
-                  - Hangul
-                  - Latin
-                  result: Consume
-                M-C-E:
-                  behavior: !Mode Emoji
-                  result: ConsumeIfProcessed
-                Esc:
-                  behavior: !Switch Latin
-                  result: Bypass
-                Muhenkan:
-                  behavior: !Toggle
-                  - Hangul
-                  - Latin
-                  result: Consume
-                AltR:
-                  behavior: !Toggle
-                  - Hangul
-                  - Latin
-                  result: Consume
-                ControlR:
-                  behavior: !Toggle
-                  - Hangul
-                  - Latin
-                  result: Consume
-                Hangul:
-                  behavior: !Toggle
-                  - Hangul
-                  - Latin
-                  result: Consume
-              category_hotkeys:
-                Hangul:
-                  # ControlR:
-                  #   behavior: !Mode Hanja
-                  #   result: Consume
-                  HangulHanja:
-                    behavior: !Mode Hanja
-                    result: Consume
-                  F9:
-                    behavior: !Mode Hanja
-                    result: ConsumeIfProcessed
-              mode_hotkeys:
-                Math:
-                  Enter:
-                    behavior: Commit
-                    result: ConsumeIfProcessed
-                  Tab:
-                    behavior: Commit
-                    result: ConsumeIfProcessed
-                Hanja:
-                  Enter:
-                    behavior: Commit
-                    result: ConsumeIfProcessed
-                  Tab:
-                    behavior: Commit
-                    result: ConsumeIfProcessed
-                Emoji:
-                  Enter:
-                    behavior: Commit
-                    result: ConsumeIfProcessed
-                  Tab:
-                    behavior: Commit
-                    result: ConsumeIfProcessed
-              candidate_font: Noto Sans CJK KR
-              xim_preedit_font:
-              - Noto Sans CJK KR
-              - 15.0
-              latin:
-                layout: Qwerty
-                preferred_direct: true
-              hangul:
-                layout: dubeolsik
-                word_commit: false
-                preedit_johab: Needed
-                addons:
-                  all: []
-                  # - ComposeChoseongSsang
-                  dubeolsik:
-                  - TreatJongseongAsChoseong
-          '';
-        };
-      }
-    else
-      { }
-  );
+  i18n = (if userConfig.system == "x86_64-linux" || userConfig.system
+  == "aarch64-linux" then {
+    inputMethod = {
+      enable = true;
+      type = "kime";
+      kime.extraConfig = ''
+        daemon:
+          modules:
+          - Xim
+          - Wayland
+          - Indicator
+        indicator:
+          icon_color: White
+        log:
+          global_level: DEBUG
+        engine:
+          translation_layer: null
+          default_category: Latin
+          global_category_state: false
+          global_hotkeys:
+            M-C-Backslash:
+              behavior: !Mode Math
+              result: ConsumeIfProcessed 
+            C-Space:
+              behavior: !Toggle
+              - Hangul
+              - Latin
+              result: Consume
+            S-Space:
+              behavior: !Toggle
+              - Hangul
+              - Latin
+              result: Consume
+            M-C-E:
+              behavior: !Mode Emoji
+              result: ConsumeIfProcessed
+            Esc:
+              behavior: !Switch Latin
+              result: Bypass
+            Muhenkan:
+              behavior: !Toggle
+              - Hangul
+              - Latin
+              result: Consume
+            AltR:
+              behavior: !Toggle
+              - Hangul
+              - Latin
+              result: Consume
+            ControlR:
+              behavior: !Toggle
+              - Hangul
+              - Latin
+              result: Consume
+            Hangul:
+              behavior: !Toggle
+              - Hangul
+              - Latin
+              result: Consume
+          category_hotkeys:
+            Hangul:
+              # ControlR:
+              #   behavior: !Mode Hanja
+              #   result: Consume
+              HangulHanja:
+                behavior: !Mode Hanja
+                result: Consume
+              F9:
+                behavior: !Mode Hanja
+                result: ConsumeIfProcessed
+          mode_hotkeys:
+            Math:
+              Enter:
+                behavior: Commit
+                result: ConsumeIfProcessed
+              Tab:
+                behavior: Commit
+                result: ConsumeIfProcessed
+            Hanja:
+              Enter:
+                behavior: Commit
+                result: ConsumeIfProcessed
+              Tab:
+                behavior: Commit
+                result: ConsumeIfProcessed
+            Emoji:
+              Enter:
+                behavior: Commit
+                result: ConsumeIfProcessed
+              Tab:
+                behavior: Commit
+                result: ConsumeIfProcessed
+          candidate_font: Noto Sans CJK KR
+          xim_preedit_font:
+          - Noto Sans CJK KR
+          - 15.0
+          latin:
+            layout: Qwerty
+            preferred_direct: true
+          hangul:
+            layout: dubeolsik
+            word_commit: false
+            preedit_johab: Needed
+            addons:
+              all: []
+              # - ComposeChoseongSsang
+              dubeolsik:
+              - TreatJongseongAsChoseong
+      '';
+    };
+  } else
+    { });
 
-  home.packages =
-    with pkgs;
+  home.packages = with pkgs;
     [
       nerd-fonts.symbols-only
       nerd-fonts.fira-code
@@ -274,33 +268,29 @@ in
       slack
       discord
       fastfetch
-    ]
-    ++ (
-      if userConfig.system == "x86_64-darwin" || userConfig.system == "aarch64-darwin" then
-        [
-          # macOS-only packages
-          iterm2
-          karabiner-elements
-          brave
-          vscode
-          slack
-          discord
-        ]
-      else if userConfig.system == "x86_64-linux" || userConfig.system == "aarch64-linux" then
-        [
-          # Linux-only packages
-          chromium
-          jetbrains.idea-ultimate
-          kime
-          firefox
-          xclip # Clipboard
-          glibc
-          playonlinux
-          xrdp
-          extraPackages.wiremix.packages.${userConfig.system}.default
-          tor-browser
-        ]
-      else
-        [ ]
-    );
+      youtube-music
+    ] ++ (if userConfig.system == "x86_64-darwin" || userConfig.system
+    == "aarch64-darwin" then [
+      # macOS-only packages
+      iterm2
+      karabiner-elements
+      brave
+      vscode
+      slack
+      discord
+    ] else if userConfig.system == "x86_64-linux" || userConfig.system
+    == "aarch64-linux" then [
+      # Linux-only packages
+      chromium
+      jetbrains.idea-ultimate
+      kime
+      firefox
+      xclip # Clipboard
+      glibc
+      playonlinux
+      xrdp
+      extraPackages.wiremix.packages.${userConfig.system}.default
+      tor-browser
+    ] else
+      [ ]);
 }
