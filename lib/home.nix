@@ -1,4 +1,4 @@
-{ config, lib, pkgs, userConfig, extraPackages, ... }:
+{ inputs, config, lib, pkgs, userConfig, ... }:
 
 let
 
@@ -13,6 +13,24 @@ let
     "C:\\Users\\${userConfig.username}";
 
 in {
+  imports = [ inputs.youtube-music.homeManagerModules.default ];
+
+  programs.youtube-music = {
+    enable = true;
+    options = { tray = true; };
+    plugins = {
+      adblocker = { enabled = true; };
+      bypass-age-restrictions = { enabled = true; };
+      downloader = { enabled = true; };
+      precise-volume = { enabled = true; };
+      quality-changer = { enabled = true; };
+      synced-lyrics = { enabled = true; };
+      lyrics-genius = {
+        enabled = true;
+        romanizedLyrics = true;
+      };
+    };
+  };
 
   home.username = userConfig.username;
   home.homeDirectory = homeDirectory;
@@ -196,23 +214,6 @@ in {
   } else
     { });
 
-  programs.youtube-music = {
-    enable = true;
-    options = { tray = true; };
-    plugins = {
-      adblocker = { enabled = true; };
-      bypass-age-restrictions = { enabled = true; };
-      downloader = { enabled = true; };
-      precise-volume = { enabled = true; };
-      quality-changer = { enabled = true; };
-      synced-lyrics = { enabled = true; };
-      lyrics-genius = {
-        enabled = true;
-        romanizedLyrics = true;
-      };
-    };
-  };
-
   home.packages = with pkgs;
     [
       nerd-fonts.symbols-only
@@ -310,7 +311,7 @@ in {
       glibc
       playonlinux
       xrdp
-      extraPackages.wiremix.packages.${userConfig.system}.default
+      inputs.wiremix.packages.${userConfig.system}.default
       tor-browser
     ] else
       [ ]);

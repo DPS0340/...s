@@ -26,7 +26,7 @@
   };
 
   outputs = { self, nixpkgs, nix-darwin, flake-utils, rust-overlay, home-manager
-    , wiremix, youtube-music, ... }:
+    , wiremix, youtube-music, ... }@inputs:
     flake-utils.lib.eachDefaultSystem (system:
       let
         baseOverlays = [ (import rust-overlay) ];
@@ -288,10 +288,6 @@
         home-manager = {
           useUserPackages = true;
           useGlobalPkgs = true;
-          users = builtins.listToAttrs (builtins.map (username: {
-            name = username;
-            value = { imports = [ youtube-music.homeManagerModules.default ]; };
-          }) [ "1eedaegon" "dps0340" ]);
         };
         legacyPackages = {
           # See https://www.chrisportela.com/posts/home-manager-flake/
@@ -305,13 +301,8 @@
                   inherit system;
                   inherit username;
                 };
-                extraPackages = {
-                  inherit wiremix;
-                  inherit youtube-music;
-                };
+                inherit inputs;
               };
-
-              modules = [ ./lib/home.nix ];
             };
           }) [ "1eedaegon" "dps0340" ]);
           darwinConfigurations = builtins.listToAttrs (builtins.map (username: {
@@ -347,6 +338,7 @@
                         inherit system;
                         inherit username;
                       };
+                      inherit inputs;
                     };
                   };
                 }
