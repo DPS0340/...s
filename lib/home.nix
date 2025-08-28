@@ -129,11 +129,6 @@ in {
               - Hangul
               - Latin
               result: Consume
-            S-Space:
-              behavior: !Toggle
-              - Hangul
-              - Latin
-              result: Consume
             M-C-E:
               behavior: !Mode Emoji
               result: ConsumeIfProcessed
