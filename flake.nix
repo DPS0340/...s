@@ -247,6 +247,10 @@
             value = home-manager.lib.homeManagerConfiguration {
               inherit pkgs;
 
+              modules = [
+                ./lib/home.nix
+              ];
+
               extraSpecialArgs = {
                 userConfig = {
                   inherit system;
