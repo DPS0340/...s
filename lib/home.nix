@@ -39,68 +39,6 @@ in {
   programs.home-manager.enable = true;
   fonts.fontconfig.enable = true;
 
-  xdg = (if userConfig.system == "x86_64-linux" || userConfig.system
-  == "aarch64-linux" then {
-    # See https://discourse.nixos.org/t/partly-overriding-a-desktop-entry/20743
-    desktopEntries = {
-      "com.google.chrome" = {
-        name = "Google Chrome";
-        exec =
-          "${homeDirectory}/.nix-profile/bin/google-chrome -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
-        terminal = false;
-        type = "Application";
-        categories = [ "Application" "Network" "WebBrowser" ];
-        mimeType = [ "text/html" "text/xml" ];
-      };
-      "brave-browser" = {
-        name = "Brave";
-        exec =
-          "${homeDirectory}/.nix-profile/bin/brave -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
-        terminal = false;
-        type = "Application";
-        categories = [ "Application" "Network" "WebBrowser" ];
-        mimeType = [ "text/html" "text/xml" ];
-      };
-      "code" = {
-        name = "Visual Studio Code";
-        exec =
-          "${homeDirectory}/.nix-profile/bin/vscode -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
-        terminal = false;
-        type = "Application";
-        categories = [ "Application" ];
-        mimeType = [ "text/html" "text/xml" ];
-      };
-      "slack" = {
-        name = "Slack";
-        exec =
-          "${homeDirectory}/.nix-profile/bin/slack -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
-        terminal = false;
-        type = "Application";
-        categories = [ "Application" ];
-        mimeType = [ "text/html" "text/xml" ];
-      };
-      "discord" = {
-        name = "Discord";
-        exec =
-          "${homeDirectory}/.nix-profile/bin/discord -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
-        terminal = false;
-        type = "Application";
-        categories = [ "Application" ];
-        mimeType = [ "text/html" "text/xml" ];
-      };
-      "obsidian" = {
-        name = "Obsidian";
-        exec =
-          "${homeDirectory}/.nix-profile/bin/obsidian -- --enable-wayland-ime --enable-features=TouchpadOverscrollHistoryNavigation --wayland-text-input-version=3 %u";
-        terminal = false;
-        type = "Application";
-        categories = [ "Application" "Network" "WebBrowser" ];
-        mimeType = [ "text/html" "text/xml" ];
-      };
-    };
-  } else
-    { });
-
   i18n = (if userConfig.system == "x86_64-linux" || userConfig.system
   == "aarch64-linux" then {
     inputMethod = {
