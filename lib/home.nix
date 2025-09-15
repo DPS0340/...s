@@ -225,6 +225,7 @@ in {
       discord
       fastfetch
       flock
+      ncdu
     ] ++ (if userConfig.system == "x86_64-darwin" || userConfig.system
     == "aarch64-darwin" then [
       # macOS-only packages
