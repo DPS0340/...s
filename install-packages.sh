@@ -6,7 +6,7 @@ PS4="\n\033[1;33m>>\033[0m "; set -x
 LOCATION=$(realpath "$0")
 DIR=$(dirname "$LOCATION")
 
-nix-channel --add https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz home-manager
+nix-channel --add https://github.com/nix-community/home-manager/archive/release-26.05.tar.gz home-manager
 
 nix-channel --update
 
