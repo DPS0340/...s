@@ -187,7 +187,7 @@ in {
       k9s
       git
       rclone
-      unixtools.nettools
+      net-tools
       awscli2
       yq-go
       jq
@@ -197,11 +197,11 @@ in {
       zip
       unzip
       imgcat
-      python312Full
-      python312Packages.uv
+      python3
+      python3Packages.uv
       pyenv
       micromamba
-      nixfmt-classic
+      nixfmt
       direnv
       opentofu
       zoxide
