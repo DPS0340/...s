@@ -4,8 +4,10 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
-    nix-darwin.url = "github:nix-darwin/nix-darwin/master";
-    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    nix-darwin = {
+        url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
+        inputs.nixpkgs.follows = "nixpkgs";
+    };
     flake-utils.url = "github:numtide/flake-utils";
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
@@ -273,6 +275,7 @@
                 ./lib/darwin-settings.nix
                 home-manager.darwinModules.home-manager
                 {
+                  system.primaryUser = username;
                   # See https://github.com/nix-community/home-manager/issues/6036#issuecomment-2466986456
                   users = {
                     users.${username} = {

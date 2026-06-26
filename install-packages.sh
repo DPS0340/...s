@@ -23,6 +23,7 @@ if [ $_OS == "darwin" ]; then
     if ! command -v darwin-rebuild; then
         nix profile install nix-darwin/master#darwin-rebuild
     fi
+    nix flake update nix-darwin --flake path://$DIR
 fi
 
 $SWITCH_COMMAND switch --flake path://$DIR#$_USER

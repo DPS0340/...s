@@ -168,7 +168,7 @@ in {
       tldr
       gh
       bat
-      neofetch
+      fastfetch
       curl
       wget
       thefuck
