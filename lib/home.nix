@@ -171,7 +171,6 @@ in {
       fastfetch
       curl
       wget
-      thefuck
       nodejs
       gcc
       libiconv
