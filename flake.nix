@@ -17,8 +17,8 @@
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    wiremix = {
-      url = "github:tsowell/wiremix";
+    codex-desktop-linux = {
+      url = "github:ilysenko/codex-desktop-linux";
       flake = true;
     };
     youtube-music = {
@@ -28,7 +28,7 @@
   };
 
   outputs = { self, nixpkgs, nix-darwin, flake-utils, rust-overlay, home-manager
-    , wiremix, youtube-music, ... }@inputs:
+    , codex-desktop-linux, youtube-music, ... }@inputs:
     flake-utils.lib.eachDefaultSystem (system:
       let
         overlays = [ (import rust-overlay) ];

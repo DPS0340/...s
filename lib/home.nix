@@ -234,14 +234,14 @@ in {
     == "aarch64-linux" then [
       # Linux-only packages
       chromium
-      jetbrains.idea-ultimate
+      jetbrains.idea
       kime
       firefox
       xclip # Clipboard
       glibc
       playonlinux
       xrdp
-      inputs.wiremix.packages.${userConfig.system}.default
+      inputs.codex-desktop-linux.packages.${userConfig.system}.default
       tor-browser
     ] else
       [ ]);
