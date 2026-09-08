@@ -16,7 +16,7 @@ _OS=$(uname | tr '[:upper:]' '[:lower:]')
 _ARCH=$(uname -m)
 _USER=$(whoami)
 
-SWITCH_COMMAND="home-manager"
+SWITCH_COMMAND="nix run github:nix-community/home-manager --"
 
 if [ $_OS == "darwin" ]; then
     SWITCH_COMMAND="sudo darwin-rebuild"
