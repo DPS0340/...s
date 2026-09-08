@@ -1,4 +1,4 @@
-{ inputs, config, lib, pkgs, userConfig, ... }:
+{ inputs, config, lib, pkgs, userConfig, targets, ... }:
 
 let
 
@@ -38,6 +38,20 @@ in {
   home.stateVersion = "26.05";
   programs.home-manager.enable = true;
   fonts.fontconfig.enable = true;
+
+  targets.genericLinux.enable = true;
+  # See https://discourse.nixos.org/t/kde-plasma-6-wont-show-applications-after-install-using-home-manager/40638/4
+  home.activation.linkDesktopApplications = {
+    after = [ "writeBoundary" "createXdgUserDirectories" ];
+    before = [ ];
+    data = ''
+      rm -rf ${config.xdg.dataHome}/nix-desktop-files/applications
+      mkdir -p ${config.xdg.dataHome}/nix-desktop-files/applications
+      cp -Lr ${config.home.homeDirectory}/.nix-profile/share/applications/* ${config.xdg.dataHome}/nix-desktop-files/applications/
+    '';
+  };
+  xdg.enable = true;
+  xdg.systemDirs.data = [ "${config.xdg.dataHome}/nix-desktop-files" ];
 
   i18n = (if userConfig.system == "x86_64-linux" || userConfig.system
   == "aarch64-linux" then {
