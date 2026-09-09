@@ -12,6 +12,12 @@ let
   else
     "C:\\Users\\${userConfig.username}";
 
+  # GTK from Nix cannot discover kime through the host distribution's cache.
+  kimeGtk3Cache = pkgs.runCommand "kime-gtk3-immodules.cache" { } ''
+    ${pkgs.gtk3.dev}/bin/gtk-query-immodules-3.0 \
+      ${pkgs.kime}/lib/gtk-3.0/3.0.0/immodules/im-kime.so > "$out"
+  '';
+
 in {
   imports = [ inputs.youtube-music.homeManagerModules.default ];
 
@@ -52,6 +58,52 @@ in {
   };
   xdg.enable = true;
   xdg.systemDirs.data = [ "${config.xdg.dataHome}/nix-desktop-files" ];
+
+  # Plasma starts applications through systemd, without sourcing shell profiles.
+  systemd.user.sessionVariables = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+    inherit (config.home.sessionVariables) GTK_IM_MODULE QT_IM_MODULE XMODIFIERS;
+  };
+
+  # KWin must launch the Wayland frontend itself to give it an input-method socket.
+  # The Home Manager service continues to provide the indicator and XIM frontend.
+  xdg.desktopEntries.kime = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+    name = "kime daemon";
+    exec = "${pkgs.kime}/bin/kime-wayland";
+    icon = "kime-hangul-white";
+    noDisplay = true;
+    startupNotify = false;
+    settings."X-KDE-Wayland-VirtualKeyboard" = "true";
+  };
+
+  home.activation.configureKimePlasma = lib.mkIf pkgs.stdenv.hostPlatform.isLinux
+    (lib.hm.dag.entryAfter [ "installPackages" ] ''
+      if [ "''${XDG_SESSION_TYPE:-}" = wayland ] && \
+         [[ ":''${XDG_CURRENT_DESKTOP:-}:" == *:KDE:* ]]; then
+        run ${pkgs.kdePackages.kconfig}/bin/kwriteconfig6 \
+          --file kwinrc --group Wayland --key InputMethod --notify \
+          "${config.home.profileDirectory}/share/applications/kime.desktop"
+      fi
+    '');
+
+  programs.brave = {
+    enable = true;
+    package = if pkgs.stdenv.hostPlatform.isLinux then
+      pkgs.brave.overrideAttrs (old: {
+        preFixup = (old.preFixup or "") + ''
+          gappsWrapperArgs+=(
+            --set GTK_IM_MODULE kime
+            --set GTK_IM_MODULE_FILE ${kimeGtk3Cache}
+          )
+        '';
+      })
+    else pkgs.brave;
+    # kime 3.1.1 aborts on KWin's wl_keyboard.repeat_info event. Chromium's
+    # current Wayland backend also bypasses GTK IMEs, so use GTK3 on XWayland.
+    commandLineArgs = lib.optionals pkgs.stdenv.hostPlatform.isLinux [
+      "--ozone-platform=x11"
+      "--gtk-version=3"
+    ];
+  };
 
   i18n = (if userConfig.system == "x86_64-linux" || userConfig.system
   == "aarch64-linux" then {
@@ -232,7 +284,6 @@ in {
       mkpasswd
       mc
       google-chrome
-      brave
       vscode
       slack
       discord
