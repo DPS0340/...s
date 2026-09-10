@@ -56,6 +56,31 @@ Change to your architecture from below command example.
 
 `❯ nix profile remove activationPackage`
 
+## KDE on a non-NixOS Linux host
+
+`lib/linux-desktop.nix` adds the Nix profile to Plasma's startup PATH and the
+systemd user environment while keeping existing host commands first. It also
+starts Pear Desktop through XWayland and isolates the distribution's Plasma
+browser connector from the Qt libraries exported by Nix browsers.
+
+After activating this configuration, log in again to refresh the desktop's
+environment. An existing session can be refreshed without closing applications:
+
+```sh
+. "$HOME/.config/plasma-workspace/env/10-home-manager-path.sh"
+dbus-update-activation-environment --systemd PATH
+systemctl --user restart plasma-plasmashell.service
+kbuildsycoca6 --noincremental
+```
+
+For `dps0340` on x86-64 Linux, the GPU configuration matches the CachyOS NVIDIA
+driver. Run the `sudo /nix/store/.../bin/non-nixos-gpu-setup` command printed by
+Home Manager after activation. This installs the libraries under
+`/run/opengl-driver` and a tmpfiles rule that restores the link on boot; it does
+not install a kernel driver. When CachyOS updates NVIDIA, update the version and
+archive hash in `lib/linux-desktop.nix` to match, then activate and run the setup
+command again. See the [Home Manager GPU instructions](https://github.com/nix-community/home-manager/blob/master/docs/manual/usage/gpu-non-nixos.md).
+
 ## Uninstall
 
 1. Clean devshells

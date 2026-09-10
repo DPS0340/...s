@@ -19,7 +19,7 @@ let
   '';
 
 in {
-  imports = [ inputs.youtube-music.homeManagerModules.default ];
+  imports = [ inputs.youtube-music.homeManagerModules.default ./linux-desktop.nix ];
 
   programs.youtube-music = {
     enable = true;
