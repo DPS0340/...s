@@ -62,6 +62,8 @@ Change to your architecture from below command example.
 systemd user environment while keeping existing host commands first. It also
 starts Pear Desktop through XWayland and isolates the distribution's Plasma
 browser connector from the Qt libraries exported by Nix browsers.
+`lib/discord-ime.nix` gives both Discord command aliases the kime GTK3 module
+cache and XWayland settings, so Korean composition also works from KDE launchers.
 
 After activating this configuration, log in again to refresh the desktop's
 environment. An existing session can be refreshed without closing applications:

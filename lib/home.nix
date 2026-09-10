@@ -286,7 +286,7 @@ in {
       google-chrome
       vscode
       slack
-      discord
+      (import ./discord-ime.nix { inherit pkgs kimeGtk3Cache; })
       fastfetch
       flock
       ncdu
