@@ -284,7 +284,7 @@ in {
       mkpasswd
       mc
       google-chrome
-      vscode
+      (import ./vscode-ime.nix { inherit pkgs kimeGtk3Cache; })
       slack
       (import ./discord-ime.nix { inherit pkgs kimeGtk3Cache; })
       fastfetch
